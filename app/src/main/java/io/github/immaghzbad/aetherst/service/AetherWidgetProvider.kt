@@ -126,7 +126,7 @@ class AetherWidgetProvider : AppWidgetProvider() {
         ) {
             val isActive = protocol == currentProtocol
             val bgRes = if (isActive) R.drawable.widget_protocol_active_bg else R.drawable.widget_protocol_inactive_bg
-            val textColor = if (isActive) "#007AFF".toColorInt() else "#8E8E93".toColorInt()
+            val textColor = if (isActive) "#6D4AFF".toColorInt() else "#8E8E93".toColorInt()
             
             views.setInt(viewId, "setBackgroundResource", bgRes)
             views.setTextColor(viewId, textColor)
