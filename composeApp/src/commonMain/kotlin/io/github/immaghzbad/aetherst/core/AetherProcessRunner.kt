@@ -116,36 +116,12 @@ class AetherProcessRunner(private val context: PlatformContext) {
                 command.add(routingFile.absolutePath)
             }
 
-            if (config.protocol == AetherProtocol.ZERO_TRUST) {
-                if (config.teamName.isNotEmpty()) {
-                    command.add("--team")
-                    command.add(config.teamName)
-                }
-                when {
-                    config.accessToken.isNotEmpty() -> {
-                        command.add("--access-token")
-                        command.add(config.accessToken)
-                    }
-                    config.accessId.isNotEmpty() || config.accessSecret.isNotEmpty() -> {
-                        command.add("--access-id")
-                        command.add(config.accessId)
-                        command.add("--access-secret")
-                        command.add(config.accessSecret)
-                    }
-                    config.accessEmail.isNotEmpty() -> {
-                        command.add("--access-email")
-                        command.add(config.accessEmail)
-                    }
-                }
-                if (config.useGateway) command.add("--gateway")
-            }
             val effectiveIp = config.effectiveIpMode()
             command.add(when (effectiveIp) {
                 AetherIpMode.IPV4 -> "-4"
                 AetherIpMode.IPV6 -> "-6"
                 else -> "--dual"
             })
-            if (config.h2Mode) command.add("--h2")
             if (config.echEnabled) {
                 command.add("--ech")
                 command.add("auto")
@@ -159,15 +135,15 @@ class AetherProcessRunner(private val context: PlatformContext) {
             }
             if (config.noDataCheck) command.add("--no-data-check")
             if (config.quickReconnect) command.add("--quick-reconnect") else command.add("--no-quick-reconnect")
-            val wiwOuter = if (config.protocol == AetherProtocol.GOOL) config.wiwOuter.trim() else ""
-            val wiwInner = if (config.protocol == AetherProtocol.GOOL) config.wiwInner.trim() else ""
+            val wiwOuter = config.wiwOuter.trim()
+            val wiwInner = config.wiwInner.trim()
             val hasWiwManual = wiwOuter.isNotEmpty() || wiwInner.isNotEmpty()
-            val effectivePeerForCmd = if (!hasWiwManual && (config.protocol == AetherProtocol.WG || config.protocol == AetherProtocol.GOOL) && config.wgPeer.isNotEmpty()) config.wgPeer else if (!hasWiwManual) config.peer else ""
+            val effectivePeerForCmd = if (!hasWiwManual && config.wgPeer.isNotEmpty()) config.wgPeer else if (!hasWiwManual) config.peer else ""
             if (effectivePeerForCmd.isNotEmpty()) {
                 command.add("--peer")
                 command.add(effectivePeerForCmd)
             }
-            if (!hasWiwManual && (config.protocol == AetherProtocol.WG || config.protocol == AetherProtocol.GOOL) && effectivePeerForCmd.isNotEmpty()) {
+            if (!hasWiwManual && effectivePeerForCmd.isNotEmpty()) {
                 command.add("--wg-peer")
                 command.add(effectivePeerForCmd)
             }
@@ -184,7 +160,7 @@ class AetherProcessRunner(private val context: PlatformContext) {
                     command.add("--wiw-scan")
                 }
             }
-            if ((config.protocol == AetherProtocol.WG || config.protocol == AetherProtocol.GOOL)) {
+            if (config.protocol == AetherProtocol.GOOL) {
                 command.add("--keepalive")
                 command.add(if (config.keepaliveEnabled) config.keepalive.toString() else "0")
             }
@@ -208,7 +184,7 @@ class AetherProcessRunner(private val context: PlatformContext) {
             }
 
             val env = mutableMapOf<String, String>()
-            env["AETHER_PROTOCOL"] = config.protocol.rawValue
+            env["AETHER_PROTOCOL"] = AetherProtocol.GOOL.rawValue
             env["AETHER_NOIZE"] = config.noise.rawValue
             env["AETHER_SCAN"] = config.scanMode.rawValue
             env["AETHER_IP"] = config.effectiveIpMode().rawValue
@@ -218,7 +194,6 @@ class AetherProcessRunner(private val context: PlatformContext) {
             if (routingFile != null) {
                 env["AETHER_ROUTES_FILE"] = routingFile.absolutePath
             }
-            if (config.h2Mode) env["AETHER_MASQUE_HTTP2"] = "1"
             if (config.echEnabled) env["AETHER_ECH"] = "auto"
             val httpPort = config.httpPort.toIntOrNull() ?: 1820
             if (config.httpProxyEnabled) env["AETHER_HTTP_PROXY"] = "$httpBindHost:$httpPort"
@@ -232,7 +207,7 @@ class AetherProcessRunner(private val context: PlatformContext) {
                 env["AETHER_WG_NO_DATA_CHECK"] = "1"
             }
             if (config.quickReconnect) env["AETHER_QUICK_RECONNECT"] = "1" else env["AETHER_QUICK_RECONNECT"] = "0"
-            if (config.protocol == AetherProtocol.WG || config.protocol == AetherProtocol.GOOL) {
+            if (config.protocol == AetherProtocol.GOOL) {
                 if (!hasWiwManual) {
                     if (config.wgPeer.isNotEmpty()) env["AETHER_WG_PEER"] = config.wgPeer else if (config.peer.isNotEmpty()) env["AETHER_WG_PEER"] = config.peer
                     if (config.peer.isNotEmpty()) env["AETHER_PEER"] = config.peer
@@ -256,20 +231,6 @@ class AetherProcessRunner(private val context: PlatformContext) {
             if (config.masqueMtu > 0) env["AETHER_MASQUE_MTU"] = config.masqueMtu.toString()
             if (config.netstackTcpRx > 0) env["AETHER_NETSTACK_TCP_RX"] = config.netstackTcpRx.toString()
             if (config.netstackTcpTx > 0) env["AETHER_NETSTACK_TCP_TX"] = config.netstackTcpTx.toString()
-            if (config.protocol == AetherProtocol.ZERO_TRUST) {
-                if (config.teamName.isNotEmpty()) env["AETHER_TEAM"] = config.teamName
-                when {
-                    config.accessToken.isNotEmpty() -> env["AETHER_ACCESS_TOKEN"] = config.accessToken
-                    config.accessId.isNotEmpty() || config.accessSecret.isNotEmpty() -> {
-                        env["AETHER_ACCESS_ID"] = config.accessId
-                        env["AETHER_ACCESS_SECRET"] = config.accessSecret
-                        env["AETHER_ACCESS_CLIENT_ID"] = config.accessId
-                        env["AETHER_ACCESS_CLIENT_SECRET"] = config.accessSecret
-                    }
-                    config.accessEmail.isNotEmpty() -> env["AETHER_ACCESS_EMAIL"] = config.accessEmail
-                }
-                if (config.useGateway) env["AETHER_GATEWAY"] = "1"
-            }
             if (config.dnsEnabled && config.dnsList.isNotEmpty()) env["AETHER_DNS"] = config.dnsList
             if (config.upstreamProxyEnabled && config.upstreamProxy.isNotEmpty()) env["AETHER_UPSTREAM"] = config.upstreamProxy
             env["AETHER_ROUTE_SNIFF"] = if (config.routeSniffing) "1" else "0"
@@ -293,7 +254,7 @@ class AetherProcessRunner(private val context: PlatformContext) {
             }
             while (isActive && currentAttemptId.get() == attemptId) {
                 val line = proc.readLine() ?: break
-                parseOutputLine(line, attemptId, config.protocol, onCodeRequired)
+                parseOutputLine(line, attemptId, AetherProtocol.GOOL, onCodeRequired)
             }
             inputJob.cancel()
             val exitCode = proc.waitFor()
@@ -319,20 +280,12 @@ class AetherProcessRunner(private val context: PlatformContext) {
             lower.contains(" warn ") || lower.contains("[warn]") -> LogRepository.w(line, "AetherCore")
             else -> LogRepository.i(line, "AetherCore")
         }
-        if (isZeroTrustCodePrompt(lower)) {
-            onCodeRequired()
-            return
-        }
         when {
             lower.contains("scanning") -> {
                 goolOuterValidated = false
                 updateState(ConnectionStatus.STARTING, attemptId)
             }
             lower.contains("validating") -> updateState(ConnectionStatus.VALIDATING, attemptId)
-            (protocol == AetherProtocol.MASQUE && (lower.contains("tunnel validated") || lower.contains("connect-ip status: 200"))) ||
-            (protocol == AetherProtocol.WG && (lower.contains("wireguard tunnel validated") || lower.contains("handshake complete"))) -> {
-                updateState(ConnectionStatus.RUNNING, attemptId)
-            }
             protocol == AetherProtocol.GOOL -> {
                 if (lower.contains("outer") && lower.contains("tunnel validated")) goolOuterValidated = true
                 if (lower.contains("inner") && lower.contains("tunnel validated") && goolOuterValidated) {
@@ -345,14 +298,6 @@ class AetherProcessRunner(private val context: PlatformContext) {
                 updateState(ConnectionStatus.RECONNECTING, attemptId)
             }
         }
-    }
-
-    private fun isZeroTrustCodePrompt(line: String): Boolean {
-        return line.contains("code") && (
-            line.contains("enter") || line.contains("login") || line.contains("verif") ||
-            line.contains("confirm") || line.contains("otp") || line.contains("one-time") ||
-            line.contains("type the") || line.contains("paste") || line.contains("prompt")
-        )
     }
 
     private fun updateState(state: ConnectionStatus, attemptId: Long) {

@@ -812,10 +812,6 @@ private fun AutoDetectFinalResult(
                     RecommendationRow(strings.AUTODETECT_LABEL_MTU, "${result.recommendedMtu} bytes", scaleFactor)
                     HorizontalDivider(color = Color.White.copy(alpha = 0.06f), modifier = Modifier.padding(vertical = 4.dp))
                     RecommendationRow(strings.AUTODETECT_LABEL_NETWORK_STACK, result.recommendedIpMode.displayName, scaleFactor)
-                    if (result.recommendedH2Mode) {
-                        HorizontalDivider(color = Color.White.copy(alpha = 0.06f), modifier = Modifier.padding(vertical = 4.dp))
-                        RecommendationRow(strings.AUTODETECT_LABEL_HTTP2_FALLBACK, strings.AUTODETECT_ENABLED, scaleFactor)
-                    }
                     if (result.recommendedEch) {
                         HorizontalDivider(color = Color.White.copy(alpha = 0.06f), modifier = Modifier.padding(vertical = 4.dp))
                         RecommendationRow(strings.AUTODETECT_LABEL_ECH, strings.AUTODETECT_ENABLED, scaleFactor)
@@ -1251,44 +1247,15 @@ private fun DnsResultRow(result: DnsProbeResult, onCopy: () -> Unit, scaleFactor
 
 private fun buildResultForProtocol(protocol: AetherProtocol, base: AutoDetectResult): AutoDetectResult {
     val isDPI = base.networkFingerprint.supportsDPI
-    return when (protocol) {
-        AetherProtocol.MASQUE -> base.copy(
-            recommendedProtocol = protocol,
-            recommendedNoise = if (isDPI) AetherNoise.GFW else AetherNoise.FIREWALL,
-            recommendedScanMode = if (isDPI) AetherScanMode.IRONCLAD else AetherScanMode.BALANCED,
-            recommendedH2Mode = true,
-            recommendedEch = isDPI,
-            recommendedFragment = isDPI,
-            recommendedNoDataCheck = false
-        )
-        AetherProtocol.WG -> base.copy(
-            recommendedProtocol = protocol,
-            recommendedNoise = AetherNoise.BALANCED,
-            recommendedScanMode = AetherScanMode.TURBO,
-            recommendedH2Mode = false,
-            recommendedEch = false,
-            recommendedFragment = false,
-            recommendedNoDataCheck = true
-        )
-        AetherProtocol.GOOL -> base.copy(
-            recommendedProtocol = protocol,
-            recommendedNoise = AetherNoise.BALANCED,
-            recommendedScanMode = if (isDPI) AetherScanMode.IRONCLAD else AetherScanMode.BALANCED,
-            recommendedH2Mode = false,
-            recommendedEch = false,
-            recommendedFragment = false,
-            recommendedNoDataCheck = true
-        )
-        AetherProtocol.ZERO_TRUST -> base.copy(
-            recommendedProtocol = protocol,
-            recommendedNoise = AetherNoise.OFF,
-            recommendedScanMode = AetherScanMode.BALANCED,
-            recommendedH2Mode = false,
-            recommendedEch = false,
-            recommendedFragment = false,
-            recommendedNoDataCheck = true
-        )
-    }
+    // Gool-only build: every protocol choice resolves to Gool.
+    return base.copy(
+        recommendedProtocol = AetherProtocol.GOOL,
+        recommendedNoise = AetherNoise.BALANCED,
+        recommendedScanMode = if (isDPI) AetherScanMode.IRONCLAD else AetherScanMode.BALANCED,
+        recommendedEch = false,
+        recommendedFragment = false,
+        recommendedNoDataCheck = true
+    )
 }
 
 @Composable
@@ -1402,11 +1369,6 @@ private fun localizedAutoDetectStep(step: String, strings: io.github.immaghzbad.
         "Computing optimal configuration..." -> return strings.AD_STEP_COMPUTING_OPTIMAL
         "Optimal configuration found!" -> return strings.AD_STEP_OPTIMAL_FOUND
         "Detection failed" -> return strings.AD_STEP_DETECTION_FAILED_GENERIC
-        "MASQUE: TCP latency..." -> return strings.AD_STEP_MASQUE_TCP
-        "MASQUE: HTTPS probe..." -> return strings.AD_STEP_MASQUE_HTTPS_PROBE
-        "MASQUE: HTTPS latency..." -> return strings.AD_STEP_MASQUE_HTTPS_LATENCY
-        "WireGuard: TCP latency..." -> return strings.AD_STEP_WG_TCP
-        "WireGuard: HTTPS probe..." -> return strings.AD_STEP_WG_HTTPS_PROBE
         "Gool: TCP latency..." -> return strings.AD_STEP_GOOL_TCP
         "Gool: HTTPS probe..." -> return strings.AD_STEP_GOOL_HTTPS_PROBE
     }

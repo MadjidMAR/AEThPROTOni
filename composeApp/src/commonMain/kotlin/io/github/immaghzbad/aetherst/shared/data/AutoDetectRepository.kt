@@ -415,7 +415,7 @@ object AutoDetectRepository {
     }
 
     private suspend fun probeAllProtocols(context: PlatformContext): List<ProtocolProbeResult> {
-        val protocols = listOf(AetherProtocol.MASQUE, AetherProtocol.WG, AetherProtocol.GOOL)
+        val protocols = listOf(AetherProtocol.GOOL)
         val results = mutableListOf<ProtocolProbeResult>()
         for ((index, protocol) in protocols.withIndex()) {
             updateState(
@@ -437,12 +437,7 @@ object AutoDetectRepository {
     private suspend fun probeProtocol(protocol: AetherProtocol, context: PlatformContext): ProtocolProbeResult {
         return withContext(Dispatchers.Default) {
             try {
-                when (protocol) {
-                    AetherProtocol.MASQUE -> probeMasque(context)
-                    AetherProtocol.WG -> probeWireGuard(context)
-                    AetherProtocol.GOOL -> probeGool(context)
-                    AetherProtocol.ZERO_TRUST -> ProtocolProbeResult(protocol, ProbeStatus.SKIPPED, -1, "Zero Trust requires manual configuration")
-                }
+                probeGool(context)
             } catch (e: CancellationException) { throw e } catch (e: Exception) {
                 LogRepository.w("Protocol probe failed for ${protocol.name}: ${e.message}", "AutoDetect")
                 ProtocolProbeResult(protocol, ProbeStatus.FAILED, -1, e.message)
@@ -450,52 +445,7 @@ object AutoDetectRepository {
         }
     }
 
-    private suspend fun probeMasque(context: PlatformContext): ProtocolProbeResult {
-        return withContext(Dispatchers.Default) {
-            updateState(_state.value.copy(currentStep = "MASQUE: TCP latency..."))
-            val tcpSamplesCc = measureTcpLatency(CONNECTIVITY_CHECK_HOST, CONNECTIVITY_CHECK_PORT, 1)
-            val tcpMedianCc = medianLatency(tcpSamplesCc)
-            val tcpFallback = if (tcpMedianCc < 0) measureTcpLatency(TCP_TARGET_HOST, 443, 1) else emptyList()
-            val tcpMedian = if (tcpMedianCc > 0) tcpMedianCc else medianLatency(tcpFallback)
-            val icmp = if (tcpMedian < 0) measureIcmpLatency(context) else -1L
-            if (tcpMedian < 0 && icmp < 0) {
-                updateState(_state.value.copy(currentStep = "MASQUE: HTTPS probe..."))
-                val httpsSamples = measureHttpsLatency(1)
-                val httpsMedian = medianLatency(httpsSamples)
-                return@withContext if (httpsMedian > 0) ProtocolProbeResult(AetherProtocol.MASQUE, ProbeStatus.SUCCESS, httpsMedian) else ProtocolProbeResult(AetherProtocol.MASQUE, ProbeStatus.FAILED, -1, "Network unreachable")
-            }
-            updateState(_state.value.copy(currentStep = "MASQUE: HTTPS latency..."))
-            val httpsSamples = measureHttpsLatency(1)
-            val httpsMedian = medianLatency(httpsSamples)
-            if (httpsMedian > 0) {
-                val best = if (tcpMedian > 0) minOf(tcpMedian, httpsMedian) else httpsMedian
-                ProtocolProbeResult(AetherProtocol.MASQUE, ProbeStatus.SUCCESS, best)
-            } else if (tcpMedian > 0) {
-                ProtocolProbeResult(AetherProtocol.MASQUE, ProbeStatus.SUCCESS, tcpMedian)
-            } else {
-                ProtocolProbeResult(AetherProtocol.MASQUE, ProbeStatus.FAILED, -1, "TCP reachable but no internet access (captive portal or restricted network)")
-            }
-        }
-    }
 
-    private suspend fun probeWireGuard(context: PlatformContext): ProtocolProbeResult {
-        return withContext(Dispatchers.Default) {
-            updateState(_state.value.copy(currentStep = "WireGuard: TCP latency..."))
-            val udpSamples = measureUdpDnsLatency(UDP_TARGET_HOST, UDP_TARGET_PORT, 1)
-            val tcpSamplesCc = measureTcpLatency(CONNECTIVITY_CHECK_HOST, CONNECTIVITY_CHECK_PORT, 1)
-            val tcpMedian = medianLatency(tcpSamplesCc).let { if (it < 0) medianLatency(measureTcpLatency(TCP_TARGET_HOST, 443, 1)) else it }
-            updateState(_state.value.copy(currentStep = "WireGuard: HTTPS probe..."))
-            val httpsSamples = measureHttpsLatency(1)
-            val httpsMedian = medianLatency(httpsSamples)
-            val udpOk = udpSamples.isNotEmpty()
-            when {
-                httpsMedian > 0 && udpOk -> ProtocolProbeResult(AetherProtocol.WG, ProbeStatus.SUCCESS, minOf(httpsMedian, medianLatency(udpSamples)))
-                httpsMedian > 0 && !udpOk -> ProtocolProbeResult(AetherProtocol.WG, ProbeStatus.SUCCESS, httpsMedian + 40)
-                tcpMedian > 0 -> ProtocolProbeResult(AetherProtocol.WG, ProbeStatus.FAILED, -1, "UDP blocked - WireGuard requires UDP")
-                else -> ProtocolProbeResult(AetherProtocol.WG, ProbeStatus.FAILED, -1, "Network unreachable")
-            }
-        }
-    }
 
     private suspend fun probeGool(context: PlatformContext): ProtocolProbeResult {
         return withContext(Dispatchers.Default) {
@@ -562,11 +512,7 @@ object AutoDetectRepository {
     }
 
     private suspend fun probeNoiseModes(protocolResults: List<ProtocolProbeResult>): List<NoiseProbeResult> {
-        val bestProtocol = protocolResults.filter { it.status == ProbeStatus.SUCCESS }.minByOrNull { it.latencyMs }?.protocol ?: AetherProtocol.MASQUE
-        val noiseModes = when (bestProtocol) {
-            AetherProtocol.MASQUE -> listOf(AetherNoise.FIREWALL, AetherNoise.GFW, AetherNoise.OFF)
-            else -> listOf(AetherNoise.BALANCED, AetherNoise.AGGRESSIVE, AetherNoise.LIGHT, AetherNoise.OFF)
-        }
+        val noiseModes = listOf(AetherNoise.BALANCED, AetherNoise.AGGRESSIVE, AetherNoise.LIGHT, AetherNoise.OFF)
         return noiseModes.mapIndexed { idx, noise ->
             updateState(_state.value.copy(currentStep = "Testing ${noise.displayName} obfuscation ${idx + 1}/${noiseModes.size}...", progressPercent = 70 + (idx * 12 / noiseModes.size)))
             val effective = withContext(Dispatchers.Default) {
@@ -611,17 +557,17 @@ object AutoDetectRepository {
         val successfulProtocols = protocolResults.filter { it.status == ProbeStatus.SUCCESS }
         val recommendedProtocol = if (successfulProtocols.isNotEmpty()) {
             if (fingerprint.supportsDPI) {
-                successfulProtocols.filter { it.protocol == AetherProtocol.MASQUE || it.protocol == AetherProtocol.GOOL }.minByOrNull { it.latencyMs }?.protocol ?: successfulProtocols.minByOrNull { it.latencyMs }!!.protocol
+                successfulProtocols.filter { it.protocol == AetherProtocol.GOOL }.minByOrNull { it.latencyMs }?.protocol ?: successfulProtocols.minByOrNull { it.latencyMs }!!.protocol
             } else {
                 successfulProtocols.minByOrNull { it.latencyMs }!!.protocol
             }
         } else {
-            AetherProtocol.MASQUE
+            AetherProtocol.GOOL
         }
         val recommendedNoise = noiseResults.filter { it.status == ProbeStatus.SUCCESS && it.effective }.map { it.noise }.firstOrNull()
             ?: when (fingerprint.networkType) {
-                "restricted" -> if (recommendedProtocol == AetherProtocol.MASQUE) AetherNoise.GFW else AetherNoise.AGGRESSIVE
-                else -> if (recommendedProtocol == AetherProtocol.MASQUE) AetherNoise.FIREWALL else AetherNoise.BALANCED
+                "restricted" -> AetherNoise.AGGRESSIVE
+                else -> AetherNoise.BALANCED
             }
         val recommendedScanMode = scanModeResults.filter { it.status == ProbeStatus.SUCCESS && it.gatewayFound }.map { it.scanMode }.firstOrNull()
             ?: when {
@@ -636,10 +582,9 @@ object AutoDetectRepository {
             recommendedScanMode = recommendedScanMode,
             recommendedMtu = if (mtuResult.status == ProbeStatus.SUCCESS) mtuResult.discoveredMtu else 1100,
             recommendedIpMode = if (fingerprint.supportsIPv6) AetherIpMode.DUAL else AetherIpMode.IPV4,
-            recommendedH2Mode = recommendedProtocol == AetherProtocol.MASQUE,
-            recommendedEch = fingerprint.supportsDPI && recommendedProtocol == AetherProtocol.MASQUE,
-            recommendedFragment = fingerprint.supportsDPI && recommendedProtocol == AetherProtocol.MASQUE,
-            recommendedNoDataCheck = recommendedProtocol != AetherProtocol.MASQUE,
+            recommendedEch = false,
+            recommendedFragment = false,
+            recommendedNoDataCheck = true,
             confidence = confidence,
             networkFingerprint = fingerprint
         )

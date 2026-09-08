@@ -88,8 +88,8 @@ class AetherWidgetProvider : AppWidgetProvider() {
             views.setImageViewResource(R.id.widget_button, android.R.drawable.ic_lock_power_off)
             views.setInt(R.id.widget_button, "setBackgroundResource", buttonRes)
 
-            setupProtocolButton(context, views, R.id.proto_masque, AetherProtocol.MASQUE, config.protocol, appWidgetId)
-            setupProtocolButton(context, views, R.id.proto_wire, AetherProtocol.WG, config.protocol, appWidgetId)
+            views.setViewVisibility(R.id.proto_masque, android.view.View.GONE)
+            views.setViewVisibility(R.id.proto_wire, android.view.View.GONE)
             setupProtocolButton(context, views, R.id.proto_gool, AetherProtocol.GOOL, config.protocol, appWidgetId)
 
             val toggleIntent = Intent(context, AetherWidgetProvider::class.java).apply {
@@ -225,19 +225,6 @@ class AetherWidgetProvider : AppWidgetProvider() {
                         } else if (status == ConnectionStatus.STOPPED || status == ConnectionStatus.ERROR || status == ConnectionStatus.FAILED) {
                             if (config.connectionMode == ConnectionMode.TUNNEL) AetherVpnService.startVpn(context) else AetherProxyService.startProxy(context)
                         }
-                    }
-                    ACTION_CHANGE_PROTOCOL -> {
-                        val protocolName = intent.getStringExtra("protocol") ?: return@launch
-                        val nextProtocol = runCatching { AetherProtocol.valueOf(protocolName) }.getOrNull() ?: return@launch
-                        val currentConfig = repository.config.value
-                        if (currentConfig.protocol == nextProtocol) return@launch
-                        val status = ConnectionController.status.value
-                        if (status == ConnectionStatus.STARTING || status == ConnectionStatus.VALIDATING || status == ConnectionStatus.DATAPLANE_VALIDATED || status == ConnectionStatus.SOCKS_READY || status == ConnectionStatus.STOPPING) return@launch
-                        repository.updateConfig(currentConfig.copy(protocol = nextProtocol))
-                        if (status == ConnectionStatus.RUNNING || status == ConnectionStatus.RECONNECTING) {
-                            if (currentConfig.connectionMode == ConnectionMode.TUNNEL) AetherVpnService.restartVpn(context) else AetherProxyService.restartProxy(context)
-                        }
-                        updateAllWidgets(context)
                     }
                 }
             } finally {

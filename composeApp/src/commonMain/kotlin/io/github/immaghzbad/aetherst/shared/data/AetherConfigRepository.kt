@@ -77,7 +77,7 @@ class AetherConfigRepository private constructor(private val settings: Settings)
     }
 
     private fun readFromSettings(prefix: String): AetherConfig {
-        val protocolStr = settings.getString("${prefix}protocol", AetherProtocol.MASQUE.name)
+        val protocolStr = settings.getString("${prefix}protocol", AetherProtocol.GOOL.name)
         val noiseStr = settings.getString("${prefix}noise", AetherNoise.FIREWALL.name)
         val scanModeStr = settings.getString("${prefix}scan_mode", AetherScanMode.BALANCED.name)
         val ipModeStr = settings.getString("${prefix}ip_mode", AetherIpMode.AUTO.name)
@@ -93,7 +93,7 @@ class AetherConfigRepository private constructor(private val settings: Settings)
             if (legacyProxyOnly) ConnectionMode.PROXY_ONLY else if (isWindows) ConnectionMode.SYSTEM_PROXY else ConnectionMode.TUNNEL
         }
 
-        val protocol = runCatching { AetherProtocol.valueOf(protocolStr) }.getOrDefault(AetherProtocol.MASQUE)
+        val protocol = AetherProtocol.GOOL // Gool-only: legacy stored protocol migrated to GOOL
         val finalConnectionMode = connectionMode
 
         val presetId = settings.getString("${prefix}preset_id", "custom")
@@ -109,7 +109,6 @@ class AetherConfigRepository private constructor(private val settings: Settings)
             echEnabled = settings.getBoolean("${prefix}ech_enabled", false),
             httpProxyEnabled = settings.getBoolean("${prefix}http_proxy_enabled", false),
             perfProfile = runCatching { AetherPerfProfile.valueOf(perfProfileStr) }.getOrDefault(AetherPerfProfile.AUTO),
-            h2Mode = settings.getBoolean("${prefix}h2_mode", true),
             h2Fragment = settings.getBoolean("${prefix}h2_fragment", false),
             fragmentSize = settings.getString("${prefix}fragment_size", "16-32"),
             fragmentDelay = settings.getString("${prefix}fragment_delay", "2-10"),
@@ -140,11 +139,6 @@ class AetherConfigRepository private constructor(private val settings: Settings)
             routingRules = settings.getString("${prefix}routing_rules", "").let {
                 if (it.isEmpty()) emptyList() else runCatching { Json.decodeFromString<List<RoutingRule>>(it) }.getOrDefault(emptyList())
             },
-            teamName = settings.getString("${prefix}team_name", ""),
-            accessEmail = settings.getString("${prefix}access_email", ""),
-            accessId = settings.getString("${prefix}access_id", ""),
-            accessSecret = settings.getString("${prefix}access_secret", ""),
-            accessToken = settings.getString("${prefix}access_token", ""),
             useGateway = settings.getBoolean("${prefix}use_gateway", false),
             smartReconnect = settings.getBoolean("${prefix}smart_reconnect", true),
             reconnectRetryLimit = settings.getInt("${prefix}reconnect_retry_limit", 10),
@@ -173,15 +167,13 @@ class AetherConfigRepository private constructor(private val settings: Settings)
             cloakLogLevel = sanitizeHevLogLevel(settings.getString("${prefix}cloak_log_level", "info")),
             cloakRandomizeSniCase = settings.getBoolean("${prefix}cloak_randomize_sni_case", false),
             psiphonEnabled = settings.getBoolean("${prefix}psiphon_enabled", false),
-            psiphonChainOuter = settings.getString("${prefix}psiphon_chain_outer", "masque"),
+            psiphonChainOuter = settings.getString("${prefix}psiphon_chain_outer", "gool"),
             psiphonSocksPort = settings.getString("${prefix}psiphon_socks_port", "3080"),
             psiphonEgressRegion = sanitizePsiphonEgressRegion(settings.getString("${prefix}psiphon_egress_region", "")),
             psiphonChainMode = sanitizePsiphonChainMode(settings.getString("${prefix}psiphon_chain_mode", "AUTO")),
             psiphonMasqueOrder = settings.getString("${prefix}psiphon_masque_order", "auto"),
             psiphonViaAether = settings.getBoolean("${prefix}psiphon_via_aether", true),
             pingUrl = sanitizePingUrl(settings.getString("${prefix}ping_url", "https://www.gstatic.com/generate_204")),
-            ztStaySignedIn = settings.getBoolean("${prefix}zt_stay_signed_in", true),
-            ztTokenExpiry = settings.getString("${prefix}zt_token_expiry", "0").toLongOrNull() ?: 0,
             connectButtonStyle = sanitizeConnectButtonStyle(settings.getString("${prefix}connect_button_style", "swipe")),
             appLanguage = sanitizeAppLanguage(settings.getString("${prefix}app_language", "auto")),
             tunnelAllApps = settings.getBoolean("${prefix}tunnel_all_apps", true),
@@ -205,7 +197,7 @@ class AetherConfigRepository private constructor(private val settings: Settings)
         if (out.psiphonEnabled && !out.httpProxyEnabled) {
             out = out.copy(httpProxyEnabled = true)
         }
-        if ((out.psiphonChainOuter == "wg" || out.psiphonChainOuter == "gool") && out.psiphonChainMode == PsiphonChainMode.FALLBACK) {
+        if (out.psiphonChainOuter == "gool" && out.psiphonChainMode == PsiphonChainMode.FALLBACK) {
             out = out.copy(psiphonChainMode = PsiphonChainMode.AUTO)
         }
         return out
@@ -300,7 +292,6 @@ class AetherConfigRepository private constructor(private val settings: Settings)
         settings.putBoolean("${prefix}ech_enabled", cfg.echEnabled)
         settings.putBoolean("${prefix}http_proxy_enabled", cfg.httpProxyEnabled)
         settings.putString("${prefix}perf_profile", cfg.perfProfile.name)
-        settings.putBoolean("${prefix}h2_mode", cfg.h2Mode)
         settings.putBoolean("${prefix}h2_fragment", cfg.h2Fragment)
         settings.putString("${prefix}fragment_size", cfg.fragmentSize)
         settings.putString("${prefix}fragment_delay", cfg.fragmentDelay)
@@ -329,11 +320,6 @@ class AetherConfigRepository private constructor(private val settings: Settings)
         settings.putInt("${prefix}mtu", cfg.mtu)
         settings.putString("${prefix}connection_mode", cfg.connectionMode.name)
         settings.putString("${prefix}routing_rules", Json.encodeToString(cfg.routingRules))
-        settings.putString("${prefix}team_name", cfg.teamName)
-        settings.putString("${prefix}access_email", cfg.accessEmail)
-        settings.putString("${prefix}access_id", cfg.accessId)
-        settings.putString("${prefix}access_secret", cfg.accessSecret)
-        settings.putString("${prefix}access_token", cfg.accessToken)
         settings.putBoolean("${prefix}use_gateway", cfg.useGateway)
         settings.putBoolean("${prefix}smart_reconnect", cfg.smartReconnect)
         settings.putInt("${prefix}reconnect_retry_limit", cfg.reconnectRetryLimit)
@@ -369,8 +355,6 @@ class AetherConfigRepository private constructor(private val settings: Settings)
         settings.putString("${prefix}psiphon_masque_order", cfg.psiphonMasqueOrder)
         settings.putBoolean("${prefix}psiphon_via_aether", cfg.psiphonViaAether)
         settings.putString("${prefix}ping_url", sanitizePingUrl(cfg.pingUrl))
-        settings.putBoolean("${prefix}zt_stay_signed_in", cfg.ztStaySignedIn)
-        settings.putString("${prefix}zt_token_expiry", cfg.ztTokenExpiry.toString())
         settings.putString("${prefix}connect_button_style", sanitizeConnectButtonStyle(cfg.connectButtonStyle))
         settings.putString("${prefix}app_language", sanitizeAppLanguage(cfg.appLanguage))
         settings.putBoolean("${prefix}tunnel_all_apps", cfg.tunnelAllApps)
@@ -428,9 +412,9 @@ class AetherConfigRepository private constructor(private val settings: Settings)
             return
         }
         val targetProtocol = when (presetId) {
-            "turbo", "thorough" -> AetherProtocol.MASQUE
+            "turbo", "thorough" -> AetherProtocol.GOOL
             "stealth" -> AetherProtocol.GOOL
-            "ironclad" -> AetherProtocol.WG
+            "ironclad" -> AetherProtocol.GOOL
             else -> return
         }
         if (current.protocol != targetProtocol) {
@@ -440,12 +424,11 @@ class AetherConfigRepository private constructor(private val settings: Settings)
         var updated = when (presetId) {
             "turbo" -> base.copy(
                 presetId = "turbo",
-                protocol = AetherProtocol.MASQUE,
+                protocol = AetherProtocol.GOOL,
                 noise = AetherNoise.GFW,
                 scanMode = AetherScanMode.TURBO,
                 echEnabled = false,
                 httpProxyEnabled = false,
-                h2Mode = true,
                 h2Fragment = false,
                 noDataCheck = false,
                 tlsGroups = "",
@@ -456,12 +439,11 @@ class AetherConfigRepository private constructor(private val settings: Settings)
             )
             "thorough" -> base.copy(
                 presetId = "thorough",
-                protocol = AetherProtocol.MASQUE,
+                protocol = AetherProtocol.GOOL,
                 noise = AetherNoise.GFW,
                 scanMode = AetherScanMode.TURBO,
                 echEnabled = false,
                 httpProxyEnabled = false,
-                h2Mode = true,
                 h2Fragment = false,
                 noDataCheck = false,
                 tlsGroups = "",
@@ -477,7 +459,6 @@ class AetherConfigRepository private constructor(private val settings: Settings)
                 scanMode = AetherScanMode.STEALTH,
                 echEnabled = false,
                 httpProxyEnabled = true,
-                h2Mode = true,
                 h2Fragment = false,
                 noDataCheck = false,
                 tlsGroups = "",
@@ -488,12 +469,11 @@ class AetherConfigRepository private constructor(private val settings: Settings)
             )
             "ironclad" -> base.copy(
                 presetId = "ironclad",
-                protocol = AetherProtocol.WG,
+                protocol = AetherProtocol.GOOL,
                 noise = AetherNoise.AGGRESSIVE,
                 scanMode = AetherScanMode.STEALTH,
                 echEnabled = false,
                 httpProxyEnabled = true,
-                h2Mode = true,
                 h2Fragment = false,
                 noDataCheck = false,
                 tlsGroups = "",
@@ -521,7 +501,6 @@ class AetherConfigRepository private constructor(private val settings: Settings)
         settings.putString("${p}ip_mode", cfg.ipMode.name)
         settings.putBoolean("${p}ech_enabled", cfg.echEnabled)
         settings.putBoolean("${p}http_proxy_enabled", cfg.httpProxyEnabled)
-        settings.putBoolean("${p}h2_mode", cfg.h2Mode)
         settings.putBoolean("${p}h2_fragment", cfg.h2Fragment)
         settings.putString("${p}fragment_size", cfg.fragmentSize)
         settings.putString("${p}fragment_delay", cfg.fragmentDelay)
@@ -543,13 +522,6 @@ class AetherConfigRepository private constructor(private val settings: Settings)
         settings.putBoolean("${p}no_profile_retry", cfg.noProfileRetry)
         settings.putString("${p}tls_groups", cfg.tlsGroups)
         settings.putInt("${p}mtu", cfg.mtu)
-        settings.putString("${p}team_name", cfg.teamName)
-        settings.putString("${p}access_email", cfg.accessEmail)
-        settings.putString("${p}access_id", cfg.accessId)
-        settings.putString("${p}access_secret", cfg.accessSecret)
-        settings.putString("${p}access_token", cfg.accessToken)
-        settings.putBoolean("${p}zt_stay_signed_in", cfg.ztStaySignedIn)
-        settings.putString("${p}zt_token_expiry", cfg.ztTokenExpiry.toString())
         settings.putBoolean("${p}use_gateway", cfg.useGateway)
         settings.putString("${p}upstream_proxy", cfg.upstreamProxy)
         settings.putBoolean("${p}upstream_proxy_enabled", cfg.upstreamProxyEnabled)
@@ -560,128 +532,36 @@ class AetherConfigRepository private constructor(private val settings: Settings)
     }
 
     private fun protocolDefaults(base: AetherConfig, protocol: AetherProtocol): AetherConfig {
-        return when (protocol) {
-            AetherProtocol.MASQUE -> base.copy(
-                protocol = protocol,
-                noise = AetherNoise.GFW,
-                scanMode = AetherScanMode.TURBO,
-                ipMode = AetherIpMode.AUTO,
-                echEnabled = false,
-                httpProxyEnabled = false,
-                h2Mode = true,
-                h2Fragment = false,
-                fragmentSize = "16-32",
-                fragmentDelay = "2-10",
-                noDataCheck = false,
-                quickReconnect = true,
-                peer = "",
-                wgPeer = "",
-                wiwOuter = "",
-                wiwInner = "",
-                wiwScan = true,
-                masqueMtu = 0,
-                netstackTcpRx = 0,
-                netstackTcpTx = 0,
-                keepaliveEnabled = true,
-                keepalive = 5,
-                validateSecs = 10,
-                reconnectSecs = 2,
-                wgEndpointCooldownSecs = 300,
-                noProfileRetry = false,
-                tlsGroups = "",
-                mtu = 1320
-            )
-            AetherProtocol.WG -> base.copy(
-                protocol = protocol,
-                noise = AetherNoise.AGGRESSIVE,
-                scanMode = AetherScanMode.STEALTH,
-                ipMode = AetherIpMode.AUTO,
-                echEnabled = false,
-                httpProxyEnabled = true,
-                h2Mode = true,
-                h2Fragment = false,
-                fragmentSize = "16-32",
-                fragmentDelay = "2-10",
-                noDataCheck = false,
-                quickReconnect = true,
-                peer = "",
-                wgPeer = "",
-                wiwOuter = "",
-                wiwInner = "",
-                wiwScan = true,
-                masqueMtu = 0,
-                netstackTcpRx = 0,
-                netstackTcpTx = 0,
-                keepaliveEnabled = true,
-                keepalive = 5,
-                validateSecs = 10,
-                reconnectSecs = 2,
-                wgEndpointCooldownSecs = 300,
-                noProfileRetry = false,
-                tlsGroups = "",
-                mtu = 1330
-            )
-            AetherProtocol.GOOL -> base.copy(
-                protocol = protocol,
-                noise = AetherNoise.AGGRESSIVE,
-                scanMode = AetherScanMode.STEALTH,
-                ipMode = AetherIpMode.AUTO,
-                echEnabled = false,
-                httpProxyEnabled = true,
-                h2Mode = true,
-                h2Fragment = false,
-                fragmentSize = "16-32",
-                fragmentDelay = "2-10",
-                noDataCheck = false,
-                quickReconnect = true,
-                peer = "",
-                wgPeer = "",
-                wiwOuter = "",
-                wiwInner = "",
-                wiwScan = true,
-                masqueMtu = 0,
-                netstackTcpRx = 0,
-                netstackTcpTx = 0,
-                keepaliveEnabled = true,
-                keepalive = 5,
-                validateSecs = 10,
-                reconnectSecs = 2,
-                wgEndpointCooldownSecs = 300,
-                noProfileRetry = false,
-                tlsGroups = "",
-                mtu = 1330
-            )
-            AetherProtocol.ZERO_TRUST -> base.copy(
-                protocol = protocol,
-                noise = AetherNoise.OFF,
-                scanMode = AetherScanMode.BALANCED,
-                ipMode = AetherIpMode.AUTO,
-                echEnabled = false,
-                httpProxyEnabled = false,
-                h2Mode = true,
-                h2Fragment = false,
-                fragmentSize = "16-32",
-                fragmentDelay = "2-10",
-                noDataCheck = false,
-                quickReconnect = true,
-                peer = "",
-                wgPeer = "",
-                wiwOuter = "",
-                wiwInner = "",
-                wiwScan = true,
-                masqueMtu = 0,
-                netstackTcpRx = 0,
-                netstackTcpTx = 0,
-                keepaliveEnabled = true,
-                keepalive = 5,
-                validateSecs = 10,
-                reconnectSecs = 2,
-                wgEndpointCooldownSecs = 300,
-                noProfileRetry = false,
-                tlsGroups = "",
-                mtu = 1420
-            )
-        }
+        // Gool-only build: every legacy protocol falls back to GOOL defaults.
+        return base.copy(
+            protocol = AetherProtocol.GOOL,
+            noise = AetherNoise.AGGRESSIVE,
+            scanMode = AetherScanMode.STEALTH,
+            ipMode = AetherIpMode.AUTO,
+            echEnabled = false,
+            httpProxyEnabled = true,
+            h2Fragment = false,
+            fragmentSize = "16-32",
+            fragmentDelay = "2-10",
+            noDataCheck = false,
+            quickReconnect = true,
+            peer = "",
+            wgPeer = "",
+            wiwOuter = "",
+            wiwInner = "",
+            wiwScan = true,
+            masqueMtu = 0,
+            netstackTcpRx = 0,
+            netstackTcpTx = 0,
+            keepaliveEnabled = true,
+            keepalive = 5,
+            validateSecs = 10,
+            reconnectSecs = 2,
+            wgEndpointCooldownSecs = 300,
+            noProfileRetry = false,
+            tlsGroups = "",
+            mtu = 1330
+        )
     }
 
     private fun loadProtocolSettings(protocol: AetherProtocol, base: AetherConfig): AetherConfig {
@@ -696,7 +576,6 @@ class AetherConfigRepository private constructor(private val settings: Settings)
             ipMode = runCatching { AetherIpMode.valueOf(settings.getString("${p}ip_mode", "")) }.getOrDefault(base.ipMode),
             echEnabled = settings.getBoolean("${p}ech_enabled", false),
             httpProxyEnabled = settings.getBoolean("${p}http_proxy_enabled", base.httpProxyEnabled),
-            h2Mode = settings.getBoolean("${p}h2_mode", true),
             h2Fragment = settings.getBoolean("${p}h2_fragment", false),
             fragmentSize = settings.getString("${p}fragment_size", "16-32"),
             fragmentDelay = settings.getString("${p}fragment_delay", "2-10"),
@@ -718,13 +597,6 @@ class AetherConfigRepository private constructor(private val settings: Settings)
             noProfileRetry = settings.getBoolean("${p}no_profile_retry", false),
             tlsGroups = settings.getString("${p}tls_groups", ""),
             mtu = settings.getInt("${p}mtu", 1100),
-            teamName = settings.getString("${p}team_name", ""),
-            accessEmail = settings.getString("${p}access_email", ""),
-            accessId = settings.getString("${p}access_id", ""),
-            accessSecret = settings.getString("${p}access_secret", ""),
-            accessToken = settings.getString("${p}access_token", ""),
-            ztStaySignedIn = settings.getBoolean("${p}zt_stay_signed_in", true),
-            ztTokenExpiry = settings.getString("${p}zt_token_expiry", "0").toLongOrNull() ?: 0,
             useGateway = settings.getBoolean("${p}use_gateway", false),
             upstreamProxy = settings.getString("${p}upstream_proxy", ""),
             upstreamProxyEnabled = settings.getBoolean("${p}upstream_proxy_enabled", false),

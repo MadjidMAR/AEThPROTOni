@@ -53,12 +53,11 @@ data class NetworkFingerprint(
 
 @Serializable
 data class AutoDetectResult(
-    val recommendedProtocol: AetherProtocol = AetherProtocol.MASQUE,
+    val recommendedProtocol: AetherProtocol = AetherProtocol.GOOL,
     val recommendedNoise: AetherNoise = AetherNoise.FIREWALL,
     val recommendedScanMode: AetherScanMode = AetherScanMode.BALANCED,
     val recommendedMtu: Int = 1100,
     val recommendedIpMode: AetherIpMode = AetherIpMode.IPV4,
-    val recommendedH2Mode: Boolean = true,
     val recommendedEch: Boolean = false,
     val recommendedFragment: Boolean = false,
     val recommendedNoDataCheck: Boolean = false,

@@ -32,8 +32,6 @@ class OnboardingViewModel(platformContext: PlatformContext) : ViewModel() {
         OnboardingState(
             currentStep = normalizeStep(repository.getOnboardingStep().let { if (it == OnboardingStep.WELCOME) OnboardingStep.LANGUAGE_SELECT else it }),
             protocolResults = listOf(
-                ProtocolAttemptResult(AetherProtocol.MASQUE),
-                ProtocolAttemptResult(AetherProtocol.WG),
                 ProtocolAttemptResult(AetherProtocol.GOOL)
             ),
             selectedScanMode = AetherScanMode.TURBO

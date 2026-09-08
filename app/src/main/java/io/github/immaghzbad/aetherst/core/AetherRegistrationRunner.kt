@@ -75,10 +75,9 @@ class AetherRegistrationRunner(private val context: Context) {
             commandList.add("--bind")
             commandList.add(bindAddr)
 
-            if (config.h2Mode) commandList.add("--h2")
             if (config.quickReconnect) commandList.add("--quick-reconnect") else commandList.add("--no-quick-reconnect")
 
-            if ((protocol == AetherProtocol.WG) || (protocol == AetherProtocol.GOOL)) {
+            if (protocol == AetherProtocol.GOOL) {
                 commandList.add("--keepalive")
                 commandList.add(if (config.keepaliveEnabled) config.keepalive.toString() else "0")
             }
@@ -98,7 +97,6 @@ class AetherRegistrationRunner(private val context: Context) {
             env["AETHER_NOIZE"] = config.noise.rawValue
             env["AETHER_SOCKS"] = bindAddr
 
-            if (config.h2Mode) env["AETHER_MASQUE_HTTP2"] = "1"
             if (config.quickReconnect) env["AETHER_QUICK_RECONNECT"] = "1" else env["AETHER_QUICK_RECONNECT"] = "0"
             env["AETHER_WG_KEEPALIVE"] = if (config.keepaliveEnabled) config.keepalive.toString() else "0"
             env["AETHER_MASQUE_VALIDATE_SECS"] = config.validateSecs.toString()

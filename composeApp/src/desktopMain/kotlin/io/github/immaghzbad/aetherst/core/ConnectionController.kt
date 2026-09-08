@@ -3,7 +3,6 @@ package io.github.immaghzbad.aetherst.shared.core
 import io.github.immaghzbad.aetherst.shared.data.AetherConfigRepository
 import io.github.immaghzbad.aetherst.shared.data.LogRepository
 import io.github.immaghzbad.aetherst.shared.model.*
-import io.github.immaghzbad.aetherst.core.CloakController
 import io.github.immaghzbad.aetherst.platform.PlatformContext
 import io.github.immaghzbad.aetherst.platform.getSettings
 import io.github.immaghzbad.aetherst.platform.getTrafficProvider
@@ -107,19 +106,8 @@ actual object ConnectionController {
                     runner.connectionStatus.collect { _status.value = it }
                 }
             }
-            val config = AetherConfigRepository.getInstance(getSettings(context)).config.value.effectiveZeroTrustConfig()
+            val config = AetherConfigRepository.getInstance(getSettings(context)).config.value
             var effectiveConfig = config
-            try {
-                if (CloakController.isSupported(config)) {
-                    val started = try { CloakController.start(context, config) } catch (_: Throwable) { false }
-                    if (started && CloakController.isRunning()) {
-                        effectiveConfig = config.copy(peer = CloakController.getEffectivePeer(config))
-                        LogRepository.i("[Controller] Cloak active, routing MASQUE via ${effectiveConfig.peer}", "Cloak")
-                    } else if (started) {
-                        LogRepository.w("[Controller] Cloak start reported success but not running, fallback to direct peer", "Cloak")
-                    }
-                }
-            } catch (_: Throwable) {}
             baseTx = trafficProvider.getTxBytes()
             baseRx = trafficProvider.getRxBytes()
 
@@ -303,7 +291,6 @@ actual object ConnectionController {
             httpProxy = null
             tunnelModeStarted = false
             TunHelper.stop()
-            try { CloakController.stop() } catch (_: Throwable) {}
             routingEngine = null
             statusJob?.cancel()
             statusJob = null

@@ -79,8 +79,6 @@ class AetherViewModel(platformContext: PlatformContext) : ViewModel() {
     private val _importErrorMessage = MutableStateFlow<String?>(null)
     val importErrorMessage: StateFlow<String?> = _importErrorMessage.asStateFlow()
 
-    private val _scrollToZeroTrust = MutableStateFlow(false)
-    val scrollToZeroTrust: StateFlow<Boolean> = _scrollToZeroTrust.asStateFlow()
 
     private val _isOptimizingMtu = MutableStateFlow(false)
     val isOptimizingMtu: StateFlow<Boolean> = _isOptimizingMtu.asStateFlow()
@@ -123,15 +121,6 @@ class AetherViewModel(platformContext: PlatformContext) : ViewModel() {
         if (currentState == ConnectionStatus.STOPPING) return
 
         val cfg = config.value
-        if (cfg.protocol == AetherProtocol.ZERO_TRUST) {
-            val strings = getEffectiveStrings(cfg.appLanguage)
-            val ztError = cfg.zeroTrustErrorLocalized(strings)
-            if (ztError != null) {
-                showToast(ztError, true)
-                _scrollToZeroTrust.value = true
-                return
-            }
-        }
 
         try {
             if ((currentState == ConnectionStatus.STOPPED) || (currentState == ConnectionStatus.ERROR)) {
@@ -187,9 +176,6 @@ class AetherViewModel(platformContext: PlatformContext) : ViewModel() {
         }
         val isUiOnly = oldConfig.copy(connectButtonStyle = effectiveNewConfig.connectButtonStyle, appLanguage = effectiveNewConfig.appLanguage) == effectiveNewConfig
         if (!isUiOnly && !requireDisconnected()) return
-        if (oldConfig.protocol == AetherProtocol.ZERO_TRUST && effectiveNewConfig.protocol != AetherProtocol.ZERO_TRUST) {
-            _scrollToZeroTrust.value = false
-        }
         repository.updateConfig(effectiveNewConfig)
         val needsRestart = oldConfig.connectionMode != effectiveNewConfig.connectionMode ||
                 oldConfig.tunnelAllApps != effectiveNewConfig.tunnelAllApps ||
@@ -339,12 +325,7 @@ class AetherViewModel(platformContext: PlatformContext) : ViewModel() {
 
             withContext(Dispatchers.Default) {
                 try {
-                    val currentProtocol = config.value.protocol
-                    val overhead = when (currentProtocol) {
-                        AetherProtocol.WG, AetherProtocol.GOOL -> 80
-                        AetherProtocol.MASQUE -> 60
-                        else -> 40
-                    }
+                    val overhead = 80 // Gool-only build
 
                     val localMtu = systemUtils.getInterfaceMtu()
                     LogRepository.i("Step 1: Local interface reports MTU: $localMtu", "MTUProbe")
@@ -465,7 +446,6 @@ class AetherViewModel(platformContext: PlatformContext) : ViewModel() {
         }
     }
     fun clearImportError() { _importErrorMessage.value = null }
-    fun onZeroTrustScrolled() { _scrollToZeroTrust.value = false }
     fun dismissUpdate() { _updateInfo.value = null }
     fun cancelImport() { _importConflictRules.value = null }
     fun applyPreset(presetId: String) {
@@ -483,7 +463,6 @@ class AetherViewModel(platformContext: PlatformContext) : ViewModel() {
             scanMode = result.recommendedScanMode,
             mtu = if (result.recommendedMtu > 0) result.recommendedMtu else oldConfig.mtu,
             ipMode = result.recommendedIpMode,
-            h2Mode = result.recommendedH2Mode,
             echEnabled = result.recommendedEch,
             h2Fragment = result.recommendedFragment,
             fragmentSize = "16-32",

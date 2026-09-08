@@ -216,12 +216,10 @@ fun DashboardScreen(
     onToggleVpn: () -> Unit,
     onForceStop: () -> Unit = {},
     onUpdateConfig: (AetherConfig) -> Unit = {},
-    onUpdateProtocol: (AetherProtocol) -> Unit,
     onTogglePsiphon: (Boolean) -> Unit = {},
     onRefreshIpInfo: () -> Unit = {},
     onRefreshPing: () -> Unit = {},
     onCopy: (String) -> Unit = {},
-    onOpenSettingsToZeroTrust: () -> Unit = {},
     bottomContentPadding: Dp = 0.dp,
     platformContext: PlatformContext? = null,
     onSwipeDragging: (Boolean) -> Unit = {}
@@ -378,11 +376,7 @@ fun DashboardScreen(
                         shape = RoundedCornerShape(6.dp),
                         color = PvSurface
                     ) {
-                        val protocolText = if (config.protocol == AetherProtocol.MASQUE) {
-                            if (config.h2Mode) "MASQUE (H2)" else "MASQUE (H3)"
-                        } else {
-                            config.protocol.displayName
-                        }
+                        val protocolText = config.protocol.displayName
                         Text(
                             text = protocolText,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
@@ -394,24 +388,6 @@ fun DashboardScreen(
                     }
                 }
 
-                // ── Zero Trust badge ──
-                if (config.protocol == AetherProtocol.ZERO_TRUST && isConnected && config.teamName.isNotBlank()) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.VerifiedUser, null, tint = PvGreen, modifier = Modifier.size((14 * scaleFactor).dp))
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = buildString {
-                                append(config.teamName)
-                                val who = config.accessEmail.ifBlank { config.accessId.ifBlank { config.accessToken.takeIf { it.isNotBlank() }?.let { "token" } } }
-                                if (!who.isNullOrBlank()) append(" • $who")
-                            },
-                            style = MaterialTheme.typography.bodySmall,
-                            color = PvGreen,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = (11 * scaleFactor).sp
-                        )
-                    }
-                }
             }
 
             // ═══ CENTER SECTION: Map + Power Button + Stats ═══
@@ -443,12 +419,6 @@ fun DashboardScreen(
                     onToggle = {
                         if (connectionStatus == ConnectionStatus.STOPPING) {
                             onForceStop()
-                        } else if (config.protocol == AetherProtocol.ZERO_TRUST && connectionStatus == ConnectionStatus.STOPPED) {
-                            if (config.zeroTrustError() != null) {
-                                showAdminRequiredDialog = true
-                            } else {
-                                onToggleVpn()
-                            }
                         } else if (isWindows && config.connectionMode == ConnectionMode.TUNNEL && systemUtils?.isAdministrator() == false) {
                             showAdminRequiredDialog = true
                         } else {
@@ -616,7 +586,7 @@ fun DashboardScreen(
 
                 // ── Psiphon Chain Card (minimal) ──
                 run {
-                    val psiphonAllowed = config.protocol != AetherProtocol.ZERO_TRUST
+                    val psiphonAllowed = true
                     val psiphonOn = config.psiphonEnabled && psiphonAllowed
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
@@ -650,12 +620,7 @@ fun DashboardScreen(
                                             fontSize = (12 * scaleFactor).sp
                                         )
                                         Text(
-                                            if (!psiphonAllowed) strings.PSIPHON_NOT_AVAILABLE_ZT else if (config.psiphonEnabled) when (config.protocol) {
-                                                AetherProtocol.MASQUE -> strings.PSIPHON_OVER_MASQUE
-                                                AetherProtocol.WG -> strings.PSIPHON_OVER_WG
-                                                AetherProtocol.GOOL -> strings.PSIPHON_OVER_GOOL
-                                                AetherProtocol.ZERO_TRUST -> strings.PSIPHON_ROUTE_VIA
-                                            } else strings.PSIPHON_ROUTE_VIA,
+                                            if (config.psiphonEnabled) strings.PSIPHON_OVER_GOOL else strings.PSIPHON_ROUTE_VIA,
                                             color = PvTextSecondary,
                                             fontSize = (10 * scaleFactor).sp
                                         )
@@ -720,14 +685,6 @@ fun DashboardScreen(
                     }
                 }
 
-                // ── Protocol Segmented Control (minimal) ──
-                IosProtocolSegmentedControl(
-                    selectedProtocol = config.protocol,
-                    onProtocolSelected = onUpdateProtocol,
-                    enabled = connectionStatus == ConnectionStatus.STOPPED || connectionStatus == ConnectionStatus.ERROR,
-                    allowedProtocols = if (config.psiphonEnabled) setOf(AetherProtocol.MASQUE, AetherProtocol.WG, AetherProtocol.GOOL) else null,
-                    scaleFactor = scaleFactor
-                )
 
                 if (isDesktop && isWindows) {
                     IosConnectionModeSegmentedControl(
@@ -1601,61 +1558,6 @@ fun IosConnectionModeSegmentedControl(
 }
 
 @Composable
-fun IosProtocolSegmentedControl(
-    selectedProtocol: AetherProtocol,
-    onProtocolSelected: (AetherProtocol) -> Unit,
-    enabled: Boolean = true,
-    allowedProtocols: Set<AetherProtocol>? = null,
-    scaleFactor: Float = 1f
-) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        color = PvSurface
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(3.dp),
-            horizontalArrangement = Arrangement.spacedBy(3.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AetherProtocol.entries.forEach { proto ->
-                val selected = proto == selectedProtocol
-                val itemEnabled = enabled && (allowedProtocols == null || proto in allowedProtocols)
-                val bg by animateColorAsState(
-                    targetValue = if (selected) PvPurple else Color.Transparent,
-                    animationSpec = tween(200), label = "protoBg"
-                )
-                val textColor by animateColorAsState(
-                    targetValue = if (selected) Color.White else PvTextSecondary,
-                    animationSpec = tween(200), label = "protoText"
-                )
-                val label = if (proto == AetherProtocol.ZERO_TRUST) "Z-TRUST" else proto.displayName.split(" ")[0].uppercase()
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height((34 * scaleFactor).dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(bg)
-                        .clickable(enabled = itemEnabled) { onProtocolSelected(proto) }
-                        .graphicsLayer { alpha = if (itemEnabled || selected) 1f else 0.45f },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold,
-                        color = textColor,
-                        fontSize = (10 * scaleFactor).sp,
-                        letterSpacing = 0.3.sp,
-                        maxLines = 1
-                    )
-                }
-            }
-        }
-    }
-}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // PsiphonOptionsSheet (kept from original, restyled)
@@ -1697,10 +1599,7 @@ private fun PsiphonOptionsSheet(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        when (config.protocol) {
-                            AetherProtocol.MASQUE -> strings.PSIPHON_OPTIONS_SUBTITLE_MASQUE
-                            else -> strings.PSIPHON_OPTIONS_SUBTITLE_WG
-                        },
+                        strings.PSIPHON_OPTIONS_SUBTITLE_WG,
                         color = PvTextSecondary,
                         fontSize = (12 * scaleFactor).sp
                     )
@@ -1711,43 +1610,28 @@ private fun PsiphonOptionsSheet(
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1A1D))
                 ) {
                     Column {
-                        val outerOptions = listOf("MASQUE", "WireGuard", "Gool")
-                        val outerValues = listOf("masque", "wg", "gool")
-                        val currentOuter = when (config.psiphonChainOuter) {
-                            "wg" -> "WireGuard"; "gool" -> "Gool"; else -> "MASQUE"
-                        }
                         IosPickerRow(
                             icon = Icons.Default.VpnLock,
                             iconBg = PvGreen,
                             title = strings.OUTER_PROTOCOL,
-                            value = currentOuter,
-                            options = outerOptions,
-                            onOptionSelected = { idx ->
-                                val outer = outerValues[idx]
-                                val proto = when (outer) {
-                                    "wg" -> AetherProtocol.WG; "gool" -> AetherProtocol.GOOL; else -> AetherProtocol.MASQUE
-                                }
-                                onUpdateConfig(config.copy(psiphonChainOuter = outer, protocol = proto))
-                            }
+                            value = "Gool",
+                            options = listOf("Gool"),
+                            onOptionSelected = { onUpdateConfig(config.copy(psiphonChainOuter = "gool", protocol = AetherProtocol.GOOL)) }
                         )
                         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
                             Text(
-                                when (config.psiphonChainOuter) {
-                                    "wg" -> strings.PSIPHON_SHEET_OUTER_DESC_WG
-                                    "gool" -> strings.PSIPHON_SHEET_OUTER_DESC_GOOL
-                                    else -> strings.PSIPHON_SHEET_OUTER_DESC_MASQUE
-                                },
+                                strings.PSIPHON_SHEET_OUTER_DESC_GOOL,
                                 color = PvTextSecondary,
                                 fontSize = (12 * scaleFactor).sp,
                                 lineHeight = (16 * scaleFactor).sp
                             )
                         }
-                        if (config.protocol == AetherProtocol.MASQUE && config.psiphonEnabled) {
+                        if (config.psiphonEnabled) {
                             PsiphonDivider()
-                            val orderOptions = listOf("Psiphon first", "MASQUE first", "Auto")
-                            val orderValues = listOf("psiphon_first", "masque_first", "auto")
+                            val orderOptions = listOf("Psiphon first", "Auto")
+                            val orderValues = listOf("psiphon_first", "auto")
                             val currentOrder = when (config.psiphonMasqueOrder) {
-                                "masque_first" -> "MASQUE first"; "auto" -> "Auto"; else -> "Psiphon first"
+                                "auto" -> "Auto"; else -> "Psiphon first"
                             }
                             IosPickerRow(
                                 icon = Icons.Default.SwapHoriz,
@@ -1760,7 +1644,6 @@ private fun PsiphonOptionsSheet(
                             Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
                                 Text(
                                     when (config.psiphonMasqueOrder) {
-                                        "masque_first" -> strings.PSIPHON_SHEET_ORDER_DESC_MASQUE_FIRST
                                         "auto" -> strings.PSIPHON_SHEET_ORDER_DESC_AUTO
                                         else -> strings.PSIPHON_SHEET_ORDER_DESC_PSIPHON_FIRST
                                     },
@@ -1770,8 +1653,8 @@ private fun PsiphonOptionsSheet(
                                 )
                             }
                         }
-                        val isWgFamily = config.protocol == AetherProtocol.WG || config.protocol == AetherProtocol.GOOL
-                        if (!isWgFamily && config.protocol != AetherProtocol.MASQUE) {
+                        val isWgFamily = true
+                        if (false) {
                             PsiphonDivider()
                             val chainModes = listOf(PsiphonChainMode.AUTO, PsiphonChainMode.FALLBACK, PsiphonChainMode.ALWAYS)
                             val chainLabels = mapOf(PsiphonChainMode.AUTO to "Auto", PsiphonChainMode.FALLBACK to "Fallback", PsiphonChainMode.ALWAYS to "Always")
@@ -1832,11 +1715,7 @@ private fun PsiphonOptionsSheet(
                         Text(strings.HOW_IT_WORKS, fontWeight = FontWeight.Bold, color = PvTextPrimary, fontSize = (14 * scaleFactor).sp)
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
-                            when (config.psiphonChainOuter) {
-                                "wg" -> strings.PSIPHON_SHEET_HOW_WG
-                                "gool" -> strings.PSIPHON_SHEET_HOW_GOOL
-                                else -> strings.PSIPHON_SHEET_HOW_MASQUE
-                            },
+                            strings.PSIPHON_SHEET_HOW_GOOL,
                             color = PvTextSecondary,
                             fontSize = (12 * scaleFactor).sp,
                             lineHeight = (17 * scaleFactor).sp

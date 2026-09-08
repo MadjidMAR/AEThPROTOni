@@ -16,7 +16,7 @@ object CloakController {
     private var tailJob: kotlinx.coroutines.Job? = null
 
     fun isSupported(config: AetherConfig): Boolean {
-        return config.cloakEnabled && config.protocol == AetherProtocol.MASQUE && config.h2Mode
+        return config.cloakEnabled
     }
 
     fun getCloakPort(): Int = cloakPort

@@ -19,8 +19,6 @@ object CloakController {
 
     fun isSupported(config: AetherConfig): Boolean {
         if (!config.cloakEnabled) return false
-        if (config.protocol != AetherProtocol.MASQUE) return false
-        if (!config.h2Mode) return false
         return true
     }
 
