@@ -446,7 +446,7 @@ fun WorldMapCanvas(
 
     // Convert server locations to a rememberable structure for tap detection
     val serverPoints = remember {
-        serverLocations.map { (name, x, y) -> Triple(name, x, y) }
+        serverLocations.map { (pair, z) -> Triple(pair.first, pair.second, z) }
     }
 
     Canvas(
@@ -468,7 +468,7 @@ fun WorldMapCanvas(
                         val dist = hypot(dx, dy)
                         if (dist < hitRadius && dist < closestDist) {
                             closest = name
-                            closestDist = dist
+                            closestDist = dist.toFloat()
                         }
                     }
                     closest?.let { onServerSelected(it) }
@@ -516,9 +516,10 @@ fun WorldMapCanvas(
 
         // ── Connection line ─────────────────────────────────────────────────
         if (isConnected && selectedServer != null) {
-            val target = serverLocations.find { it.first == selectedServer }
+            val target = serverLocations.find { it.first.first == selectedServer }
             if (target != null) {
-                val (tx, ty) = target
+                val tx = target.first.second
+                val ty = target.second
                 val (ux, uy) = defaultUserLocation
                 drawConnectionLine(
                     fromX = ux * w,
@@ -550,7 +551,7 @@ fun WorldMapCanvas(
 
             if (isActiveServer) {
                 // Pulsing glow for connected server
-                val glowIntensity = (sin(pulsePhase * 2f * PI.toFloat()) + 1f) / 2f
+                val glowIntensity = (sin((pulsePhase * 2f * PI.toFloat()).toDouble()).toFloat() + 1f) / 2f
                 val pulseRadius = baseRadius + 4f * glowIntensity
 
                 // Animated expanding ring
