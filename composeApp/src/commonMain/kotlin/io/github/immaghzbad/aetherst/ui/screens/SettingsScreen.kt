@@ -432,8 +432,8 @@ private fun SettingsSubPage(page: SettingsPage, config: AetherConfig, isBatteryO
     }
 }
 
-@Composable 
-@Composable private fun NetworkPage(config: AetherConfig, onUpdateConfig: (AetherConfig) -> Unit, onShowToast: (String, Boolean) -> Unit = { _, _ -> }, onOpenDnsOptimizer: () -> Unit = {}) {
+@Composable
+private fun NetworkPage(config: AetherConfig, onUpdateConfig: (AetherConfig) -> Unit, onShowToast: (String, Boolean) -> Unit = { _, _ -> }, onOpenDnsOptimizer: () -> Unit = {}) {
     val strings = LocalAppStrings.current
     val httpLocked = config.psiphonEnabled
     IosGroupCard { Column {

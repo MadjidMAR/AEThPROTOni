@@ -1557,8 +1557,6 @@ fun IosConnectionModeSegmentedControl(
     }
 }
 
-@Composable
-
 // ═══════════════════════════════════════════════════════════════════════════════
 // PsiphonOptionsSheet (kept from original, restyled)
 // ═══════════════════════════════════════════════════════════════════════════════

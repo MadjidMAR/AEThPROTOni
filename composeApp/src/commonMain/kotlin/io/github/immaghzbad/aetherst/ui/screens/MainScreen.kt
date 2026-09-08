@@ -411,8 +411,6 @@ private fun DashboardContent(viewModel: AetherViewModel, scaleFactor: Float, pla
 }
 
 @Composable
-
-@Composable
 private fun CurvedNavBar(
     selectedTab: Int,
     onTabSelected: (Int) -> Unit,
