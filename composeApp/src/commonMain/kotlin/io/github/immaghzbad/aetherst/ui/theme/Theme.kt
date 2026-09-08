@@ -12,18 +12,18 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF007AFF),
+    primary = Color(0xFF6D4AFF),
     onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFF0A2A5E),
-    onPrimaryContainer = Color(0xFFD6E2FF),
+    primaryContainer = Color(0xFF2A2150),
+    onPrimaryContainer = Color(0xFFD6CCFF),
     secondary = Color(0xFF8A8A95),
-    background = Color(0xFF0F0F12),
+    background = Color(0xFF0D0D12),
     onBackground = Color(0xFFECECF1),
-    surface = Color(0xFF16161A),
+    surface = Color(0xFF18181B),
     onSurface = Color(0xFFECECF1),
     surfaceVariant = Color(0xFF232329),
     onSurfaceVariant = Color(0xFFCAC4D0),
-    outline = Color(0xFF3A3A42),
+    outline = Color(0xFF2E2E35),
 )
 
 private val LightColorScheme = lightColorScheme(

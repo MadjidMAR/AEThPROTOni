@@ -112,7 +112,7 @@ fun IosPresetItem(icon: ImageVector, iconBg: Color, title: String, subtitle: Str
 fun IosGroupCard(content: @Composable () -> Unit) { Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = IosCardBg), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) { content() } }
 
 @Composable
-fun IosIconBadge(icon: ImageVector, backgroundColor: Color, scaleFactor: Float = 1f) { Box(modifier = Modifier.size((30 * scaleFactor).dp).clip(RoundedCornerShape((8 * scaleFactor).dp)).background(backgroundColor), contentAlignment = Alignment.Center) { Icon(icon, null, tint = Color.White, modifier = Modifier.size((18 * scaleFactor).dp)) } }
+fun IosIconBadge(icon: ImageVector, backgroundColor: Color, scaleFactor: Float = 1f) { Box(modifier = Modifier.size((30 * scaleFactor).dp).clip(RoundedCornerShape((8 * scaleFactor).dp)).background(AppPalette.protonCardBg), contentAlignment = Alignment.Center) { Icon(icon, null, tint = AppPalette.protonPurple, modifier = Modifier.size((18 * scaleFactor).dp)) } }
 
 @Composable
 fun IosSwitchRow(icon: ImageVector, iconBg: Color, title: String, subtitle: String? = null, checked: Boolean, enabled: Boolean = true, onCheckedChange: (Boolean) -> Unit, testTag: String, scaleFactor: Float = 1f) {
