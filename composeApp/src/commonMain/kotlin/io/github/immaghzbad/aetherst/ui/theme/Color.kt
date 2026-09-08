@@ -22,28 +22,36 @@ val ScanningAmber = Color(0xFFFFB74D)
 val ErrorRed = Color(0xFFF2B8B5)
 
 object AppPalette {
-    val accent = Color(0xFF007AFF)
+    val accent = Color(0xFF6D4AFF)
     val accentVariant = Color(0xFF5856D6)
     val accentVariantAlt = Color(0xFFAF52DE)
     val onAccent = Color(0xFFFFFFFF)
 
     val statusConnected = Color(0xFF34C759)
+    val protonGreen = Color(0xFF30D158)
     val statusScanning = Color(0xFFFF9500)
     val statusError = Color(0xFFFF3B30)
     val debugCyan = Color(0xFF64D2FF)
 
-    val surfaceRaised = Color(0xFF1C1C1E)
+    val surfaceRaised = Color(0xFF18181B)
     val surfaceSunken = Color(0xFF0A0A0D)
-    val groupBg = Color(0xFF2C2C2E)
-    val divider = Color(0xFF2C2C2E)
-    val inactiveTrack = Color(0xFF3A3A3C)
+    val groupBg = Color(0xFF232329)
+    val divider = Color(0xFF2E2E35)
+    val inactiveTrack = Color(0xFF3A3A42)
 
     val textPrimary = Color(0xFFECECF1)
     val textSecondary = Color(0xFF8E8E93)
 
     val navBackground = Color(0xFF1C1C1E)
-    val navActive = Color(0xFF007AFF)
+    val navActive = Color(0xFF6D4AFF)
     val navInactive = Color(0xFF8E8E93)
+
+    // Proton VPN specific colors
+    val protonPurple = Color(0xFF6D4AFF)
+    val protonDarkBg = Color(0xFF0D0D12)
+    val protonCardBg = Color(0xFF1C1C24)
+    val protonBorder = Color(0xFF2E2E35)
+    val protonTextMuted = Color(0xFF6B6B78)
 }
 
 @Immutable
