@@ -1894,7 +1894,4 @@ private fun formatSpeedValue(bytesPerSec: Double): String {
     }
 }
 
-@Composable
-private fun MaterialThemeTextStyle.copy(textDirection: TextDirection): TextStyle {
-    return this.copy(textDirection = textDirection)
-}
+
