@@ -1,0 +1,62 @@
+package io.github.immaghzbad.aetherst.shared.core
+
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+import java.util.concurrent.TimeUnit
+
+actual class PlatformProcess actual constructor() {
+    private var process: Process? = null
+    private var reader: BufferedReader? = null
+    private var writer: BufferedWriter? = null
+
+    actual suspend fun start(command: List<String>, directory: String, env: Map<String, String>): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val pb = ProcessBuilder(command)
+            pb.directory(java.io.File(directory))
+            pb.environment().putAll(env)
+            pb.redirectErrorStream(true)
+            val proc = pb.start()
+            process = proc
+            reader = BufferedReader(InputStreamReader(proc.inputStream))
+            writer = BufferedWriter(OutputStreamWriter(proc.outputStream))
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    actual suspend fun readLine(): String? = withContext(Dispatchers.IO) {
+        try { reader?.readLine() } catch (e: Exception) { null }
+    }
+
+    actual suspend fun writeLine(line: String): Unit = withContext(Dispatchers.IO) {
+        try {
+            writer?.write(line)
+            writer?.newLine()
+            writer?.flush()
+        } catch (_: Exception) {}
+    }
+
+    actual fun waitFor(): Int = process?.waitFor() ?: -1
+    actual fun destroy() {
+        val proc = process ?: return
+        val isWindows = System.getProperty("os.name").lowercase().contains("win")
+        if (isWindows) {
+            runCatching {
+                val pid = proc.pid()
+                if (pid > 0) {
+                    ProcessBuilder("taskkill", "/F", "/T", "/PID", pid.toString())
+                        .redirectErrorStream(true)
+                        .start()
+                        .waitFor(10, TimeUnit.SECONDS)
+                    return
+                }
+            }.getOrElse { proc.destroyForcibly() }
+        }
+        proc.destroyForcibly()
+    }
+}

@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">AetherST Tunnel</string>
+    <string name="widget_title">AetherST</string>
+    <string name="widget_status_disconnected">Disconnected</string>
+    <string name="widget_button_desc">Toggle Connection</string>
+    <string name="proto_masque">MASQUE</string>
+    <string name="proto_wire">WIRE</string>
+    <string name="proto_gool">GOOL</string>
+</resources>

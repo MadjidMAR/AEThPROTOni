@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AetherST Tunnel — Advanced censorship circumvention client for Android and Windows. Bypass DPI with MASQUE, WireGuard, and Gool protocols.">
+    <meta name="keywords" content="VPN, censorship circumvention, DPI bypass, MASQUE, WireGuard, Cloudflare WARP, AetherST, tunnel, proxy, Android VPN, Windows VPN">
+    <meta name="author" content="PowerSigma Team">
+    <meta property="og:title" content="AetherST Tunnel — Documentation">
+    <meta property="og:description" content="Advanced, high-performance censorship circumvention client for Android and Windows.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AetherST Tunnel — Documentation">
+    <meta name="twitter:description" content="Advanced, high-performance censorship circumvention client for Android and Windows.">
+    <title>AetherST Tunnel — Documentation</title>
+    <link rel="canonical" href="https://immaghzbad.github.io/AetherST/">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/styles.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300">
+
+    <nav id="navbar" class="fixed top-0 inset-x-0 z-50 bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="#" class="flex items-center gap-2 font-bold text-lg tracking-tight" data-tab="home">
+                    <svg class="w-7 h-7 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                    <span>AetherST</span>
+                </a>
+                <div class="hidden md:flex items-center gap-1 text-sm font-medium">
+                    <button data-tab="home" class="nav-tab px-3 py-1.5 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors">Home</button>
+                    <button data-tab="android" class="nav-tab px-3 py-1.5 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors">Android</button>
+                    <button data-tab="windows" class="nav-tab px-3 py-1.5 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors">Windows</button>
+                    <button data-tab="aether" class="nav-tab px-3 py-1.5 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors">Aether Core</button>
+                    <button data-tab="config" class="nav-tab px-3 py-1.5 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors">Config</button>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors" aria-label="Toggle theme">
+                        <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                    </button>
+                    <a href="https://github.com/immaghzbad/AetherST" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors" target="_blank" rel="noopener">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        GitHub
+                    </a>
+                    <button id="mobile-menu-btn" class="md:hidden relative w-10 h-10 flex flex-col items-center justify-center gap-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" aria-label="Menu">
+                        <span class="hamburger-line block w-5 h-0.5 bg-gray-700 dark:bg-gray-300 rounded-full transition-all duration-300 ease-out"></span>
+                        <span class="hamburger-line block w-5 h-0.5 bg-gray-700 dark:bg-gray-300 rounded-full transition-all duration-300 ease-out"></span>
+                        <span class="hamburger-line block w-5 h-0.5 bg-gray-700 dark:bg-gray-300 rounded-full transition-all duration-300 ease-out"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="mobile-menu" class="md:hidden fixed inset-0 z-40 pointer-events-none">
+        <div id="mobile-overlay" class="absolute inset-0 bg-black/0 dark:bg-black/0 transition-all duration-300"></div>
+        <div id="mobile-panel" class="absolute top-16 right-0 w-72 max-h-[calc(100vh-4rem)] bg-white dark:bg-gray-900 border-l border-b border-gray-200 dark:border-gray-800 rounded-bl-2xl shadow-2xl shadow-black/10 dark:shadow-black/40 transform translate-x-full transition-transform duration-300 ease-out overflow-hidden pointer-events-auto">
+            <div class="p-2">
+                <div class="px-3 pt-3 pb-2">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Menu</p>
+                </div>
+                <button data-tab="home" class="mobile-nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group">
+                    <span class="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <svg class="w-4.5 h-4.5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    </span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Home</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Main page</p>
+                    </div>
+                </button>
+                <div class="px-3 pt-2 pb-1">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Documentation</p>
+                </div>
+                <button data-tab="android" class="mobile-nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group">
+                    <span class="w-9 h-9 rounded-xl bg-green-100 dark:bg-green-900/50 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <svg class="w-4.5 h-4.5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                    </span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Android App</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Setup & usage guide</p>
+                    </div>
+                </button>
+                <button data-tab="windows" class="mobile-nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group">
+                    <span class="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <svg class="w-4.5 h-4.5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Windows App</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Setup & usage guide</p>
+                    </div>
+                </button>
+                <button data-tab="aether" class="mobile-nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group">
+                    <span class="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <svg class="w-4.5 h-4.5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                    </span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Aether Core</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Technical deep dive</p>
+                    </div>
+                </button>
+                <button data-tab="config" class="mobile-nav-tab w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group">
+                    <span class="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <svg class="w-4.5 h-4.5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    </span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Configuration</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">All variables & flags</p>
+                    </div>
+                </button>
+            </div>
+            <div class="border-t border-gray-200 dark:border-gray-800 p-2">
+                <div class="px-3 pt-2 pb-1">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Links</p>
+                </div>
+                <a href="https://github.com/immaghzbad/AetherST/releases" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group" target="_blank" rel="noopener">
+                    <span class="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <svg class="w-4.5 h-4.5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    </span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Download</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Latest release</p>
+                    </div>
+                </a>
+                <a href="https://github.com/immaghzbad/AetherST" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group" target="_blank" rel="noopener">
+                    <span class="w-9 h-9 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <svg class="w-4.5 h-4.5 text-gray-600 dark:text-gray-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    </span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">GitHub</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Source code</p>
+                    </div>
+                </a>
+                <a href="https://t.me/PowerSigma" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors group" target="_blank" rel="noopener">
+                    <span class="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                        <svg class="w-4.5 h-4.5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                    </span>
+                    <div class="min-w-0">
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Telegram</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 truncate">Community support</p>
+                    </div>
+                </a>
+            </div>
+            <div class="border-t border-gray-200 dark:border-gray-800 p-4">
+                <div class="flex items-center gap-2">
+                    <button id="mobile-theme-toggle" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-sm font-medium transition-colors">
+                        <svg class="w-4 h-4 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        <svg class="w-4 h-4 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        <span class="dark:hidden">Dark Mode</span>
+                        <span class="hidden dark:inline">Light Mode</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="pt-16">
+
+        <div id="page-home" class="tab-page active">
+            <div class="pt-20 pb-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+                <div class="text-center">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 text-xs font-medium mb-6 border border-blue-200 dark:border-blue-800">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                        Aether Core v1.9.0
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6">AetherST Tunnel</h1>
+                    <p class="text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">Advanced, high-performance censorship circumvention client for Android and Windows. Bypass Deep Packet Inspection with MASQUE, WireGuard, and Gool protocols.</p>
+                </div>
+
+                <div class="max-w-4xl mx-auto mb-12">
+                    <div class="relative p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-900/80 border border-gray-200 dark:border-gray-800 overflow-hidden">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                        <div class="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/5 dark:bg-purple-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+                        <div class="relative">
+                            <div class="flex items-center gap-3 mb-5">
+                                <div class="w-12 h-12 rounded-2xl bg-blue-600 dark:bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-600/25">
+                                    <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                </div>
+                                <div class="text-left">
+                                    <h2 class="text-xl font-bold">What is AetherST?</h2>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Production-grade tunnel client</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-6 text-left">AetherST Tunnel is a high-performance VPN and proxy client built on the battle-tested <strong class="text-gray-900 dark:text-white">Aether core engine</strong>. It combines the power of Cloudflare WARP with advanced tunnel protocols to provide stable, secure connectivity in the most restricted network environments.</p>
+                            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
+                                <div class="flex items-start gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/50 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    </span>
+                                    <div>
+                                        <p class="text-sm font-semibold">Stealth Protocols</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">MASQUE, WireGuard, Gool with advanced DPI bypass</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                    </span>
+                                    <div>
+                                        <p class="text-sm font-semibold">Multi-Platform</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Android & Windows with unified UI</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                                    </span>
+                                    <div>
+                                        <p class="text-sm font-semibold">High Performance</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Low latency, high throughput, zero-copy</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                    </span>
+                                    <div>
+                                        <p class="text-sm font-semibold">Zero Trust</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Enterprise Cloudflare Gateway support</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
+                    <button data-tab="android" class="tab-card group p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 hover:border-blue-300 dark:hover:border-blue-700 transition-all text-left">
+                        <div class="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/50 flex items-center justify-center mb-3">
+                            <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                        </div>
+                        <h3 class="font-semibold mb-1">Android App</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Installation, setup, and usage guide for Android.</p>
+                    </button>
+                    <button data-tab="windows" class="tab-card group p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 hover:border-blue-300 dark:hover:border-blue-700 transition-all text-left">
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center mb-3">
+                            <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </div>
+                        <h3 class="font-semibold mb-1">Windows App</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Installation, setup, and usage guide for Windows.</p>
+                    </button>
+                    <button data-tab="aether" class="tab-card group p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 hover:border-blue-300 dark:hover:border-blue-700 transition-all text-left">
+                        <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center mb-3">
+                            <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                        </div>
+                        <h3 class="font-semibold mb-1">Aether Core</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Deep dive into the Aether core engine.</p>
+                    </button>
+                </div>
+                <div class="mt-12 flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <a href="https://github.com/immaghzbad/AetherST/releases" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-colors shadow-lg shadow-blue-600/25" target="_blank" rel="noopener">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        Download Latest Release
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-android" class="tab-page hidden">
+            <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+                <div class="mb-10">
+                    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">Android App Guide</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Complete guide to installing, configuring, and using AetherST on Android.</p>
+                </div>
+
+                <div class="space-y-10">
+                    <div>
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-sm font-bold text-blue-600 dark:text-blue-400">1</span>
+                            Installation
+                        </h2>
+                        <div class="pl-9 space-y-4">
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-2">Download the APK</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Go to the <a href="https://github.com/immaghzbad/AetherST/releases" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener">Releases page</a> and download the APK matching your device architecture.</p>
+                                <div class="p-3 rounded-lg bg-white dark:bg-gray-800 font-mono text-xs text-gray-700 dark:text-gray-300">
+                                    <code>aetherst-v1.5.6-arm64-v8a.apk</code>
+                                </div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">arm64-v8a is recommended for most modern devices. Use armeabi-v7a for older devices.</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-2">Install the APK</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Open the downloaded APK file. Your device may ask to allow installation from unknown sources — this is normal for sideloaded apps.</p>
+                                <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">1.</span> Tap the downloaded file</li>
+                                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">2.</span> Enable "Install from unknown sources" if prompted</li>
+                                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">3.</span> Tap "Install" and wait for completion</li>
+                                </ul>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-2">Grant Permissions</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">The app will request VPN permission on first launch. This is required for the tunnel to work. Tap "Allow" when prompted.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-sm font-bold text-blue-600 dark:text-blue-400">2</span>
+                            First Launch
+                        </h2>
+                        <div class="pl-9 space-y-4">
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-2">Initial Setup Wizard</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">On first launch, AetherST walks you through a quick setup:</p>
+                                <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                                    <li class="flex items-start gap-2"><span class="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-xs font-bold text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5">1</span><div><strong>Protocol Selection</strong> — Choose between MASQUE, WireGuard, or Gool. If unsure, select MASQUE (recommended).</div></li>
+                                    <li class="flex items-start gap-2"><span class="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-xs font-bold text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5">2</span><div><strong>Obfuscation Profile</strong> — Select a noise level. Start with the default (balanced). Increase if connections fail.</div></li>
+                                    <li class="flex items-start gap-2"><span class="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-xs font-bold text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5">3</span><div><strong>Scan Mode</strong> — Choose how aggressively to search for endpoints. "Balanced" works in most cases.</div></li>
+                                </ul>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-2">Connect</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Tap the large connect button on the main screen. The app will:</p>
+                                <ol class="text-sm text-gray-600 dark:text-gray-400 space-y-1 list-decimal list-inside">
+                                    <li>Scan for the best Cloudflare endpoint</li>
+                                    <li>Establish an encrypted tunnel</li>
+                                    <li>Verify the connection with a data-plane check</li>
+                                    <li>Show "Connected" status when ready</li>
+                                </ol>
+                            </div>
+                            <div class="p-4 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
+                                <p class="text-sm text-green-800 dark:text-green-300"><strong>Tip:</strong> The first connection may take 10-30 seconds while the app scans for endpoints. Subsequent connections are faster if you enable "Quick Reconnect".</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-sm font-bold text-blue-600 dark:text-blue-400">3</span>
+                            Dashboard Overview
+                        </h2>
+                        <div class="pl-9">
+                            <div class="p-5 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <div class="p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                                        <h4 class="text-sm font-semibold mb-1">Connection Status</h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Shows Connected/Disconnected with real-time data stats (upload/download speed, total data transferred).</p>
+                                    </div>
+                                    <div class="p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                                        <h4 class="text-sm font-semibold mb-1">Protocol Info</h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Displays active protocol (MASQUE/WireGuard/Gool), carrier (H3/H2), and current obfuscation profile.</p>
+                                    </div>
+                                    <div class="p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                                        <h4 class="text-sm font-semibold mb-1">Endpoint Details</h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Shows the connected Cloudflare edge IP, latency, and scan mode used.</p>
+                                    </div>
+                                    <div class="p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                                        <h4 class="text-sm font-semibold mb-1">IP Lookup</h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Built-in tool to check your public IP and confirm traffic is routing through the tunnel.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-sm font-bold text-blue-600 dark:text-blue-400">4</span>
+                            Settings Reference
+                        </h2>
+                        <div class="pl-9 space-y-4">
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-3">Protocol Settings</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Protocol</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">MASQUE (default), WireGuard, or Gool. MASQUE is recommended for most networks as it looks like regular HTTPS traffic.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Carrier (MASQUE only)</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">H3 (HTTP/3 over QUIC, default) or H2 (HTTP/2 over TCP). Switch to H2 if UDP is blocked.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Obfuscation Profile</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Firewall (default for MASQUE), GFW, Off for MASQUE. Balanced (default), Aggressive, Light, Off for WireGuard/Gool.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Scan Mode</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Turbo (fastest), Balanced (default), Thorough (best quality), Stealth (quietest), Ironclad (most reliable).</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">ClientHello Fragmentation (H2 only)</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Splits the TLS ClientHello into chunks. Helps bypass DPI that reads the SNI from a single packet. Off by default.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-3">Connection Settings</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Quick Reconnect</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">When enabled, automatically reconnects to the last known-good endpoint without rescanning. Faster reconnection.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">IPv4 / IPv6 / Dual</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Which IP version to scan for. IPv4 is safest if your network has no IPv6 support.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Custom Endpoint</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Manually set a Cloudflare edge IP:port to skip scanning entirely. Use when you know a working address.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-3">Advanced Settings</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-purple-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">DNS</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Custom DNS resolvers used inside the tunnel. Defaults to Cloudflare DNS (1.1.1.1).</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-purple-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Keepalive (WireGuard/Gool)</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Interval in seconds for keepalive packets. Default is 5. Helps maintain connections through NAT.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-purple-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Zero Trust (Team)</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Enroll as a managed device on your Cloudflare Zero Trust account. Requires team name and authentication method.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-purple-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Routing Rules</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Block or direct specific traffic. Block refuses connections; Direct bypasses the tunnel for domestic sites and LAN.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-purple-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Upstream Proxy</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Route all Aether traffic through another proxy (SOCKS5 or HTTP). For chaining behind an existing VPN.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-purple-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Log Level</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Set verbosity from Error to Trace. Use Trace for debugging connection issues.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-sm font-bold text-blue-600 dark:text-blue-400">5</span>
+                            Troubleshooting
+                        </h2>
+                        <div class="pl-9 space-y-3">
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-1">Connection fails immediately</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Try switching protocol. Start with MASQUE, then try WireGuard. If both fail, enable Gool mode. Also try increasing the obfuscation level.</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-1">Connected but no internet</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">This usually means the gateway passes handshake but drops data. The app should detect this automatically and try another endpoint. If it persists, change the scan mode to "Thorough".</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-1">Battery drain</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">If using WireGuard, lower the keepalive interval. MASQUE with H3 is generally more battery-efficient than H2.</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-1">Slow speeds</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Switch from Gool to single-layer WireGuard. If on H2 and UDP is available, try H3. Check if "Quick Reconnect" is enabled to avoid slow rescans.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-windows" class="tab-page hidden">
+            <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+                <div class="mb-10">
+                    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">Windows App Guide</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Complete guide to installing, configuring, and using AetherST on Windows.</p>
+                </div>
+
+                <div class="space-y-10">
+                    <div>
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-sm font-bold text-blue-600 dark:text-blue-400">1</span>
+                            Installation
+                        </h2>
+                        <div class="pl-9 space-y-4">
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-2">Download the Installer</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Go to the <a href="https://github.com/immaghzbad/AetherST/releases" class="text-blue-600 dark:text-blue-400 hover:underline" target="_blank" rel="noopener">Releases page</a> and download the Windows installer.</p>
+                                <div class="p-3 rounded-lg bg-white dark:bg-gray-800 font-mono text-xs text-gray-700 dark:text-gray-300">
+                                     <code>AetherST-Setup-1.1.1.exe</code>
+                                </div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-2">Run the Installer</h3>
+                                <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">1.</span> Double-click the downloaded .exe file</li>
+                                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">2.</span> Click "Yes" on the UAC prompt if it appears</li>
+                                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">3.</span> Follow the installation wizard</li>
+                                    <li class="flex items-start gap-2"><span class="text-green-500 mt-0.5">4.</span> A shortcut will be created on your desktop</li>
+                                </ul>
+                            </div>
+                            <div class="p-4 rounded-xl bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800">
+                                <p class="text-sm text-yellow-800 dark:text-yellow-300"><strong>Note:</strong> Windows may flag the installer as unrecognized. Click "More info" then "Run anyway". This is common for new software without a code-signing certificate.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-sm font-bold text-blue-600 dark:text-blue-400">2</span>
+                            First Launch
+                        </h2>
+                        <div class="pl-9 space-y-4">
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-2">Setup Wizard</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">The first time you run AetherST, it will guide you through configuration:</p>
+                                <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                                    <li class="flex items-start gap-2"><span class="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-xs font-bold text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5">1</span><div><strong>Choose Protocol</strong> — MASQUE is recommended for most networks. It disguises traffic as HTTPS.</div></li>
+                                    <li class="flex items-start gap-2"><span class="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-xs font-bold text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5">2</span><div><strong>Select Obfuscation</strong> — Start with the default profile. Increase if the connection is blocked.</div></li>
+                                    <li class="flex items-start gap-2"><span class="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-xs font-bold text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5">3</span><div><strong>Pick Scan Mode</strong> — Balanced is the default and works well in most environments.</div></li>
+                                </ul>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-2">Connect</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">Click the Connect button. The app will scan for endpoints and establish the tunnel.</p>
+                                <div class="p-3 rounded-lg bg-white dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-400">
+                                    <p class="mb-2">Status indicators:</p>
+                                    <ul class="space-y-1">
+                                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-gray-400"></span> Disconnected — Not connected</li>
+                                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span> Connecting — Scanning and establishing tunnel</li>
+                                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500"></span> Connected — Tunnel is active and verified</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-sm font-bold text-blue-600 dark:text-blue-400">3</span>
+                            Interface Overview
+                        </h2>
+                        <div class="pl-9">
+                            <div class="p-5 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <div class="p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                                        <h4 class="text-sm font-semibold mb-1">Main Dashboard</h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Large connect/disconnect button, status indicator, real-time speed and data counters.</p>
+                                    </div>
+                                    <div class="p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                                        <h4 class="text-sm font-semibold mb-1">Protocol Panel</h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Quick switching between MASQUE, WireGuard, and Gool. Shows current carrier and obfuscation profile.</p>
+                                    </div>
+                                    <div class="p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                                        <h4 class="text-sm font-semibold mb-1">Endpoint Info</h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Connected server IP, location, latency, and scan mode. Copy endpoint for sharing.</p>
+                                    </div>
+                                    <div class="p-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                                        <h4 class="text-sm font-semibold mb-1">System Tray</h4>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Minimize to system tray. Quick connect/disconnect from tray icon context menu.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-sm font-bold text-blue-600 dark:text-blue-400">4</span>
+                            Settings Reference
+                        </h2>
+                        <div class="pl-9 space-y-4">
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-3">Protocol Settings</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Protocol</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">MASQUE (default), WireGuard, or Gool. Choose based on your network conditions.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Carrier</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">H3 (default, QUIC/UDP) or H2 (TCP). H2 survives networks that block UDP.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Obfuscation</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Adjust based on network strictness. Higher levels = more stealth but slightly more overhead.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Scan Mode</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Turbo for speed, Balanced for general use, Thorough for hostile networks, Ironclad for reliability.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-3">System Settings</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Auto-start</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Launch AetherST when Windows starts. Useful for always-on connectivity.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Minimize to Tray</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Keep running in the system tray when the window is closed. Quick access from tray icon.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Quick Reconnect</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Reuse the last working endpoint without rescanning. Faster reconnection on startup.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-3">Advanced Settings</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-purple-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">DNS</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Custom resolvers for the tunnel. Defaults to Cloudflare (1.1.1.1).</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-purple-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Zero Trust</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Configure Cloudflare Zero Trust team authentication for enterprise networks.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-purple-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Routing</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Block or direct specific traffic patterns. Useful for excluding banking apps or LAN services.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3">
+                                        <span class="w-2 h-2 rounded-full bg-purple-500 mt-1.5 flex-shrink-0"></span>
+                                        <div>
+                                            <p class="text-sm font-medium">Upstream Proxy</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-400">Chain through another proxy. Supports SOCKS5 and HTTP CONNECT.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-sm font-bold text-blue-600 dark:text-blue-400">5</span>
+                            Troubleshooting
+                        </h2>
+                        <div class="pl-9 space-y-3">
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-1">Windows Defender blocks the app</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Click "More info" then "Run anyway". The app is safe but lacks a code-signing certificate. You can add an exclusion in Windows Security if needed.</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-1">No network after connecting</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">The gateway may be passing handshake but dropping data. The app should auto-detect this. If not, try switching to a different protocol or increasing the scan mode.</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-1">Firewall warnings</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Allow AetherST through Windows Firewall when prompted. Both private and public network access may be needed.</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-1">Slow scan on startup</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Enable "Quick Reconnect" in settings. If the scan still takes too long, switch to "Turbo" mode or set a custom endpoint.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-aether" class="tab-page hidden">
+            <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+                <div class="mb-10">
+                    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">Aether Core</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Deep technical reference for the Aether engine that powers AetherST.</p>
+                </div>
+
+                <div class="space-y-10">
+                    <div>
+                        <h2 class="text-xl font-bold mb-4">What Aether Does</h2>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">Aether is a user-space proxy client for Cloudflare WARP. It builds a tunnel out of a filtered network and exposes a local SOCKS5 proxy on <code class="font-mono text-sm bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">127.0.0.1:1819</code>. Point a browser, a terminal, or a system proxy at that address and the traffic leaves through the tunnel.</p>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">It needs no root and installs no network driver. Everything happens inside the process: the tunnel, a user-space TCP/IP stack, and the proxy.</p>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4">Running Aether</h2>
+                        <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                            <div class="p-3 rounded-lg bg-white dark:bg-gray-800 font-mono text-xs text-gray-700 dark:text-gray-300 mb-4 overflow-x-auto">
+                                <code>aether<br>aether --masque --scan balanced<br>aether --wg --noize aggressive --bind 127.0.0.1:1080</code>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Run with no arguments for interactive prompts, or pass flags to skip them. Every flag also has an environment variable equivalent.</p>
+                        </div>
+                        <div class="mt-4 p-4 rounded-xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
+                            <p class="text-sm text-green-800 dark:text-green-300"><strong>Verify:</strong></p>
+                            <div class="mt-2 p-3 rounded-lg bg-white dark:bg-gray-800 font-mono text-xs text-gray-700 dark:text-gray-300 overflow-x-auto">
+                                <code>curl -x socks5h://127.0.0.1:1819 https://www.cloudflare.com/cdn-cgi/trace</code>
+                            </div>
+                            <p class="text-sm text-green-800 dark:text-green-300 mt-2">Look for <code class="font-mono bg-green-100 dark:bg-green-900/50 px-1 rounded">warp=on</code> in the response.</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4">Transports</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-200 dark:border-gray-800">
+                                        <th class="text-left py-3 px-4 font-semibold">Transport</th>
+                                        <th class="text-left py-3 px-4 font-semibold">Flag</th>
+                                        <th class="text-left py-3 px-4 font-semibold">Carrier</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-600 dark:text-gray-400">
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50">
+                                        <td class="py-3 px-4 font-semibold">MASQUE</td>
+                                        <td class="py-3 px-4 font-mono text-xs text-blue-600 dark:text-blue-400">--masque (default)</td>
+                                        <td class="py-3 px-4">QUIC/HTTP-3 on UDP 443, or HTTP/2 on TCP 443</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50">
+                                        <td class="py-3 px-4 font-semibold">WireGuard</td>
+                                        <td class="py-3 px-4 font-mono text-xs text-blue-600 dark:text-blue-400">--wg</td>
+                                        <td class="py-3 px-4">WireGuard on UDP 2408</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-4 font-semibold">Gool</td>
+                                        <td class="py-3 px-4 font-mono text-xs text-blue-600 dark:text-blue-400">--gool</td>
+                                        <td class="py-3 px-4">WireGuard inside WireGuard</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4">Endpoint Scanning</h2>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">Aether does not ship a fixed address. It sweeps Cloudflare edge ranges, verifies candidates with real data-plane checks, and keeps the best one.</p>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-200 dark:border-gray-800">
+                                        <th class="text-left py-3 px-4 font-semibold">Mode</th>
+                                        <th class="text-left py-3 px-4 font-semibold">Behavior</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-600 dark:text-gray-400">
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50"><td class="py-3 px-4 font-mono text-xs text-blue-600 dark:text-blue-400">turbo</td><td class="py-3 px-4">Stops at the first candidate that answers</td></tr>
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50"><td class="py-3 px-4 font-mono text-xs text-blue-600 dark:text-blue-400">balanced</td><td class="py-3 px-4">Default. Collects a few and keeps the fastest</td></tr>
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50"><td class="py-3 px-4 font-mono text-xs text-blue-600 dark:text-blue-400">thorough</td><td class="py-3 px-4">Sweeps whole ranges, best for blocked networks</td></tr>
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50"><td class="py-3 px-4 font-mono text-xs text-blue-600 dark:text-blue-400">stealth</td><td class="py-3 px-4">Few probes in flight, for networks that notice scanning</td></tr>
+                                    <tr><td class="py-3 px-4 font-mono text-xs text-blue-600 dark:text-blue-400">ironclad</td><td class="py-3 px-4">Full tunnel and a real HTTP request per candidate</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4">Obfuscation Profiles</h2>
+                        <div class="grid lg:grid-cols-2 gap-6">
+                            <div class="p-5 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-3">MASQUE</h3>
+                                <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                                    <li class="flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span><div><strong>firewall</strong> (default) — Balanced, recommended for most restricted networks</div></li>
+                                    <li class="flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-orange-500 mt-1.5 flex-shrink-0"></span><div><strong>gfw</strong> — Heavier, try when firewall does not work</div></li>
+                                    <li class="flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-gray-400 mt-1.5 flex-shrink-0"></span><div><strong>off</strong> — No obfuscation, for open networks</div></li>
+                                </ul>
+                            </div>
+                            <div class="p-5 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-3">WireGuard / Gool</h3>
+                                <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                                    <li class="flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></span><div><strong>balanced</strong> (default) — Sweet spot between stealth and speed</div></li>
+                                    <li class="flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-red-500 mt-1.5 flex-shrink-0"></span><div><strong>aggressive</strong> — Heaviest, for very strict networks</div></li>
+                                    <li class="flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-green-500 mt-1.5 flex-shrink-0"></span><div><strong>light</strong> — Minimal, least overhead</div></li>
+                                    <li class="flex items-start gap-2"><span class="w-2 h-2 rounded-full bg-gray-400 mt-1.5 flex-shrink-0"></span><div><strong>off</strong> — No obfuscation</div></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4">H2 vs H3 in MASQUE</h2>
+                        <div class="grid lg:grid-cols-2 gap-4">
+                            <div class="p-4 rounded-xl border-2 border-green-300 dark:border-green-700 bg-gray-50 dark:bg-gray-900">
+                                <h3 class="font-semibold mb-2">HTTP/3 (H3) — Default</h3>
+                                <ul class="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                                    <li>+ Runs on QUIC over UDP</li>
+                                    <li>+ Faster handshake, fewer round trips</li>
+                                    <li>+ Packet loss does not stall connection</li>
+                                </ul>
+                            </div>
+                            <div class="p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
+                                <h3 class="font-semibold mb-2">HTTP/2 (H2) — Fallback</h3>
+                                <ul class="space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                                    <li>+ Runs on TLS/TCP 443</li>
+                                    <li>+ Looks like ordinary web traffic</li>
+                                    <li>+ Survives QUIC/UDP blocking</li>
+                                    <li>+ Supports ClientHello fragmentation</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-4 rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
+                            <p class="text-sm text-blue-800 dark:text-blue-300"><strong>Rule of thumb:</strong> Try H3 first. If UDP/QUIC is blocked, switch to H2. If H2 gets blocked, enable <code class="font-mono bg-blue-100 dark:bg-blue-900/50 px-1 rounded">--fragment</code>.</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4">Routing Rules</h2>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">Two lists control traffic. Block is checked first, then direct, otherwise the tunnel is used.</p>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-200 dark:border-gray-800">
+                                        <th class="text-left py-2 px-3 font-semibold">Entry</th>
+                                        <th class="text-left py-2 px-3 font-semibold">Matches</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-600 dark:text-gray-400">
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50"><td class="py-2 px-3 font-mono text-xs">example.com</td><td class="py-2 px-3">The name and every subdomain</td></tr>
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50"><td class="py-2 px-3 font-mono text-xs">full:example.com</td><td class="py-2 px-3">That exact name only</td></tr>
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50"><td class="py-2 px-3 font-mono text-xs">keyword:doubleclick</td><td class="py-2 px-3">Any name containing it</td></tr>
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50"><td class="py-2 px-3 font-mono text-xs">regexp:^ad[0-9]+</td><td class="py-2 px-3">A regular expression</td></tr>
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50"><td class="py-2 px-3 font-mono text-xs">10.0.0.0/8</td><td class="py-2 px-3">A network or bare address</td></tr>
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50"><td class="py-2 px-3 font-mono text-xs">port:25</td><td class="py-2 px-3">A port or range</td></tr>
+                                    <tr><td class="py-2 px-3 font-mono text-xs">private</td><td class="py-2 px-3">LAN, loopback and CGNAT space</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4">Identity Files</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-200 dark:border-gray-800">
+                                        <th class="text-left py-2 px-3 font-semibold">File</th>
+                                        <th class="text-left py-2 px-3 font-semibold">Contents</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-600 dark:text-gray-400">
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50"><td class="py-2 px-3 font-mono text-xs">aether.toml</td><td class="py-2 px-3">WireGuard identity</td></tr>
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50"><td class="py-2 px-3 font-mono text-xs">aether-masque.toml</td><td class="py-2 px-3">MASQUE identity and certificate</td></tr>
+                                    <tr class="border-b border-gray-100 dark:border-gray-800/50"><td class="py-2 px-3 font-mono text-xs">aether-team-&lt;name&gt;.toml</td><td class="py-2 px-3">One identity per Zero Trust team</td></tr>
+                                    <tr><td class="py-2 px-3 font-mono text-xs">aether-*-lastconn.toml</td><td class="py-2 px-3">Last working endpoint cache</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">Keep these files. Deleting them registers a new device.</p>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4">Environment Variables</h2>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">Every flag maps to an environment variable. Flags win when both are set.</p>
+                        <div class="grid sm:grid-cols-2 gap-3">
+                            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_SOCKS</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">SOCKS5 listen address</p></div>
+                            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_PROTOCOL</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">masque, wg, or gool</p></div>
+                            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_SCAN</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Scan mode</p></div>
+                            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_NOIZE</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Obfuscation profile</p></div>
+                            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_MASQUE_HTTP2</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Use H2 carrier</p></div>
+                            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_MASQUE_H2_FRAGMENT</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Fragment TLS ClientHello</p></div>
+                            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_QUICK_RECONNECT</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Reuse last endpoint</p></div>
+                            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_WG_KEEPALIVE</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">WireGuard keepalive interval</p></div>
+                            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_TEAM</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Zero Trust team name</p></div>
+                            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_UPSTREAM</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Upstream proxy address</p></div>
+                            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_ROUTE_BLOCK</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Block routing rules</p></div>
+                            <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_ROUTE_DIRECT</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Direct routing rules</p></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4">Examples</h2>
+                        <div class="space-y-3">
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-2">MASQUE on H2 for UDP-blocked networks</h3>
+                                <div class="p-3 rounded-lg bg-white dark:bg-gray-800 font-mono text-xs text-gray-700 dark:text-gray-300 overflow-x-auto"><code>AETHER_PROTOCOL=masque AETHER_MASQUE_HTTP2=1 AETHER_NOIZE=firewall aether</code></div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-2">WireGuard on strict network</h3>
+                                <div class="p-3 rounded-lg bg-white dark:bg-gray-800 font-mono text-xs text-gray-700 dark:text-gray-300 overflow-x-auto"><code>AETHER_PROTOCOL=wg AETHER_NOIZE=aggressive AETHER_SCAN=thorough aether</code></div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-2">Docker</h3>
+                                <div class="p-3 rounded-lg bg-white dark:bg-gray-800 font-mono text-xs text-gray-700 dark:text-gray-300 overflow-x-auto"><code>docker run -it -p 127.0.0.1:1819:1819 -v aether-data:/data \<br>&nbsp;&nbsp;-e AETHER_PROTOCOL=masque ghcr.io/cluvexstudio/aether:latest</code></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-bold mb-4">Troubleshooting</h2>
+                        <div class="space-y-3">
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-1">Does not connect</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Switch protocol. If MASQUE failed on H3, try H2. If H2 gets blocked, try <code class="font-mono text-blue-600 dark:text-blue-400">--fragment</code>. If nothing works, try WireGuard or Gool.</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-1">Connects but nothing loads</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Gateway silently drops data. Aether auto-detects this. Use <code class="font-mono text-blue-600 dark:text-blue-400">--no-data-check</code> to override.</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-1">Keeps dropping</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Increase the obfuscation profile one step.</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                                <h3 class="font-semibold text-sm mb-1">Slow</h3>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">If on Gool, try single-layer WireGuard. If on H2 and UDP is open, try H3.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-config" class="tab-page hidden">
+            <div class="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+                <div class="mb-10">
+                    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">Configuration Reference</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Complete reference of all environment variables and flags.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="config-section p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
+                        <button class="config-toggle w-full flex items-center justify-between text-left" aria-expanded="false">
+                            <h3 class="font-semibold">General Settings</h3>
+                            <svg class="w-5 h-5 text-gray-400 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="config-content hidden mt-4 space-y-2">
+                            <div class="grid sm:grid-cols-2 gap-2">
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_SOCKS</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">SOCKS5 address. Default: 127.0.0.1:1819</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_HTTP_PROXY</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">HTTP CONNECT address</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_PROTOCOL</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">masque, wg, gool</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_SCAN</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">turbo, balanced, thorough, stealth, ironclad</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_NOIZE</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Obfuscation profile</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_IP</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">4, 6, dual</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_DNS</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Tunnel DNS resolvers</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_LOG_LEVEL</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">error to trace</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="config-section p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
+                        <button class="config-toggle w-full flex items-center justify-between text-left" aria-expanded="false">
+                            <h3 class="font-semibold">MASQUE Specific</h3>
+                            <svg class="w-5 h-5 text-gray-400 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="config-content hidden mt-4 space-y-2">
+                            <div class="grid sm:grid-cols-2 gap-2">
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_MASQUE_HTTP2</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">H2 carrier. Values: 1, true, h2, yes, on</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_MASQUE_H2_PEER</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Manual H2 destination</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_MASQUE_H2_FRAGMENT</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Fragment TLS ClientHello</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_MASQUE_H2_FRAGMENT_SIZE</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Chunk size. Default: 16-32</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_MASQUE_H2_FRAGMENT_DELAY</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Delay in ms. Default: 2-10</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_MASQUE_NO_DATA_CHECK</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Skip data-plane probe</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_MASQUE_VALIDATE_SECS</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Probe timeout. Default: 10s</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_MASQUE_STARTUP_SECS</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Startup deadline. Default: 30s</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_MASQUE_RECONNECT_SECS</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Reconnect delay. Default: 2s</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="config-section p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
+                        <button class="config-toggle w-full flex items-center justify-between text-left" aria-expanded="false">
+                            <h3 class="font-semibold">WireGuard & Gool</h3>
+                            <svg class="w-5 h-5 text-gray-400 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="config-content hidden mt-4 space-y-2">
+                            <div class="grid sm:grid-cols-2 gap-2">
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_WG_KEEPALIVE</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Keepalive seconds. Default: 5</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_WG_NO_DATA_CHECK</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Skip data verification</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_WG_NO_PROFILE_RETRY</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Do not retry profiles</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_WG_RECONNECT_SECS</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Reconnect delay. Default: 2s</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_WG_ENDPOINT_COOLDOWN_SECS</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Cooldown. Default: 300s</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="config-section p-5 rounded-2xl border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
+                        <button class="config-toggle w-full flex items-center justify-between text-left" aria-expanded="false">
+                            <h3 class="font-semibold">Zero Trust & Advanced</h3>
+                            <svg class="w-5 h-5 text-gray-400 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="config-content hidden mt-4 space-y-2">
+                            <div class="grid sm:grid-cols-2 gap-2">
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_TEAM</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Zero Trust team name</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_ACCESS_EMAIL</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Email auth</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_ACCESS_CLIENT_ID</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Service token ID</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_ACCESS_CLIENT_SECRET</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Service token secret</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_ACCESS_TOKEN</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Existing JWT token</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_GATEWAY</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Route through org gateway</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_UPSTREAM</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Upstream proxy</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_REPROVISION</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Replace refused identity</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_QUICK_RECONNECT</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Reuse last gateway</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_ROUTE_BLOCK</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Block rules</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_ROUTE_DIRECT</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Direct rules</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_ROUTES_FILE</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Route config file</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_ROUTE_SNIFF</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Read name from bytes. Default: on</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_CONFIG</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Config file path</p></div>
+                                <div class="p-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"><code class="text-xs font-mono text-blue-600 dark:text-blue-400">AETHER_TLS_GROUPS</code><p class="text-xs text-gray-500 dark:text-gray-400 mt-1">TLS key-share groups</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="py-10 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto border-t border-gray-200 dark:border-gray-800 text-center">
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Built by PowerSigma Team</p>
+        <div class="flex items-center justify-center gap-4">
+            <a href="https://github.com/immaghzbad/AetherST" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" target="_blank" rel="noopener" aria-label="GitHub">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+            <a href="https://t.me/PowerSigma" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" target="_blank" rel="noopener" aria-label="Telegram">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            </a>
+        </div>
+        <p class="text-xs text-gray-400 dark:text-gray-500 mt-6">&copy; 2026 PowerSigma Team. All rights reserved.</p>
+    </footer>
+
+    <script src="assets/script.js"></script>
+</body>
+</html>

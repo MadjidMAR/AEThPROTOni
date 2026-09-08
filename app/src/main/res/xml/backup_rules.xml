@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <include domain="sharedpref" path="." />
+    <include domain="file" path="." />
+    <exclude domain="sharedpref" path="aether_prefs.xml" />
+    <exclude domain="file" path="datastore/aether.preferences_pb" />
+    <exclude domain="file" path="aether-masque.toml" />
+    <exclude domain="file" path="aether.toml" />
+    <exclude domain="file" path="aether-secondary.toml" />
+    <exclude domain="file" path="last_crash.log" />
+    <exclude domain="file" path="cloak/cloak.conf" />
+    <exclude domain="file" path="cloak/cloak.log" />
+</full-backup-content>
