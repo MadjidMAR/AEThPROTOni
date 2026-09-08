@@ -221,13 +221,14 @@ fun main(args: Array<String> = emptyArray()) {
         var bringToFrontTrigger by remember { mutableStateOf(0) }
 
         // Force window visible on startup - fix for window not showing
+        val isWindowsNow = System.getProperty("os.name")?.lowercase()?.contains("win") == true
         LaunchedEffect(Unit) {
             isVisible = true
             kotlinx.coroutines.delay(500)
             isVisible = true
             kotlinx.coroutines.delay(1000)
             // Force window to front on Windows
-            if (isWindows) {
+            if (isWindowsNow) {
                 kotlinx.coroutines.delay(500)
                 isVisible = true
             }
